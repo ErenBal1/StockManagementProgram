@@ -1,2 +1,2 @@
 # StockManagementProgram
-Stock Management Program with Java
+stockManagementProgram.Stock Management Program with Java
