@@ -5,161 +5,211 @@ import com.stockmanagement.service.StockService;
 import com.stockmanagement.ui.components.StyledComponents;
 
 import javax.swing.*;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import javax.swing.border.EmptyBorder;
 
 public class StockRemovePanel extends JPanel {
     private final StockService stockService;
+    private final JTextField searchField;
+    private final JTable productTable;
     private final JTextField quantityField;
     private final JTextField priceField;
-    private final JComboBox<String> searchComboBox;
-    private final JLabel currentQuantityLabel;
+    private final JTextField currentQuantityField;
     private Timer searchTimer;
+    private Timer refreshTimer;
 
     public StockRemovePanel(StockService stockService) {
         this.stockService = stockService;
         setLayout(new GridBagLayout());
+        setBorder(new EmptyBorder(10, 10, 10, 10));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Initialize components
+        searchField = createSearchField();
+        productTable = createProductTable();
+        JScrollPane scrollPane = new JScrollPane(productTable);
+        scrollPane.setPreferredSize(new Dimension(300, 120));
+
         quantityField = StyledComponents.createStyledTextField();
         priceField = StyledComponents.createStyledTextField();
-        searchComboBox = new JComboBox<>();
-        searchComboBox.setEditable(true);
-        currentQuantityLabel = new JLabel("");
-        JButton removeButton = StyledComponents.createStyledButton("Remove");
+        currentQuantityField = StyledComponents.createStyledTextField();
+        currentQuantityField.setEditable(false);
 
-        // Timer setup for delayed search
-        searchTimer = new Timer(300, e -> performSearch());
+        JButton removeButton = createStyledButton();
+
+        setupTimers();
+        setupLayout(gbc, scrollPane, removeButton);
+        setupListeners(removeButton);
+        updateProductTable("");
+    }
+
+    private JTextField createSearchField() {
+        JTextField field = StyledComponents.createStyledTextField();
+        field.putClientProperty("JTextField.placeholderText", "Search products...");
+        return field;
+    }
+
+    private JTable createProductTable() {
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[]{"Product Name"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        JTable table = new JTable(model);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0, 0));
+        table.setRowHeight(25);
+        table.getTableHeader().setPreferredSize(new Dimension(100, 30));
+
+        table.setSelectionBackground(new Color(173, 216, 230)); // Açık mavi arka plan
+        table.setSelectionForeground(new Color(40, 40, 40));    // Koyu gri yazı rengi
+
+        return table;
+    }
+
+    private JButton createStyledButton() {
+        JButton button = StyledComponents.createStyledButton("Remove");
+        button.setPreferredSize(new Dimension(100, 35));
+        return button;
+    }
+
+    private void setupTimers() {
+        searchTimer = new Timer(300, e -> updateProductTable(searchField.getText()));
         searchTimer.setRepeats(false);
 
-        // ComboBox editor setup
-        JTextField editor = (JTextField) searchComboBox.getEditor().getEditorComponent();
-        editor.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { delayedSearch(); }
-            public void removeUpdate(DocumentEvent e) { delayedSearch(); }
-            public void changedUpdate(DocumentEvent e) { delayedSearch(); }
-        });
-
-        // Layout setup
-        setupLayout(gbc, removeButton);
-
-        // Add listeners
-        setupListeners(removeButton);
+        refreshTimer = new Timer(2000, e -> updateProductTable(searchField.getText()));
+        refreshTimer.start();
     }
 
-    private void delayedSearch() {
-        searchTimer.restart();
-    }
+    private void setupLayout(GridBagConstraints gbc, JScrollPane scrollPane, JButton removeButton) {
+        // Search panel
+        JPanel searchPanel = new JPanel(new BorderLayout(5, 0));
+        searchPanel.add(new JLabel("Search:"), BorderLayout.WEST);
+        searchPanel.add(searchField, BorderLayout.CENTER);
 
-    private void setupLayout(GridBagConstraints gbc, JButton removeButton) {
+        // Form panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints formGbc = new GridBagConstraints();
+        formGbc.insets = new Insets(5, 5, 5, 5);
+        formGbc.anchor = GridBagConstraints.WEST;
+        formGbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Add components to form panel
+        addToForm(formPanel, formGbc, "Current Quantity:", currentQuantityField, 0);
+        addToForm(formPanel, formGbc, "Amount to Remove:", quantityField, 1);
+        addToForm(formPanel, formGbc, "Sale Price:", priceField, 2);
+
+        // Main layout
         gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Product Name:"), gbc);
-        gbc.gridx = 1;
         gbc.gridwidth = 2;
-        add(searchComboBox, gbc);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(searchPanel, gbc);
 
-        gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 1;
-        add(new JLabel("Amount to be Removed:"), gbc);
-        gbc.gridx = 1;
-        add(quantityField, gbc);
+        gbc.gridy = 1;
+        gbc.insets = new Insets(10, 5, 10, 5);
+        add(scrollPane, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        add(new JLabel("Sale price:"), gbc);
-        gbc.gridx = 1;
-        add(priceField, gbc);
+        gbc.gridy = 2;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        add(formPanel, gbc);
 
-        gbc.gridx = 1; gbc.gridy = 3;
-        add(currentQuantityLabel, gbc);
-
-        gbc.gridx = 1; gbc.gridy = 4;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
         add(removeButton, gbc);
     }
 
+    private void addToForm(JPanel panel, GridBagConstraints gbc, String label, JComponent component, int row) {
+        gbc.gridx = 0; gbc.gridy = row;
+        panel.add(new JLabel(label), gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        panel.add(component, gbc);
+        gbc.weightx = 0.0;
+    }
+
     private void setupListeners(JButton removeButton) {
-        searchComboBox.addActionListener(e -> {
-            if (e.getActionCommand().equals("comboBoxChanged")) {
-                handleSearchSelection();
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { searchTimer.restart(); }
+            public void removeUpdate(DocumentEvent e) { searchTimer.restart(); }
+            public void changedUpdate(DocumentEvent e) { searchTimer.restart(); }
+        });
+
+        productTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = productTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    String selected = (String) productTable.getValueAt(selectedRow, 0);
+                    stockService.findStock(selected).ifPresent(stock -> {
+                        currentQuantityField.setText(stock.getQuantity() + " " + stock.getUnit());
+                        priceField.setText(String.valueOf(stock.getPrice()));
+                        quantityField.setText("");
+                    });
+                }
             }
         });
+
         removeButton.addActionListener(e -> removeStock());
     }
 
-    private void performSearch() {
-        String searchTerm = ((JTextField) searchComboBox.getEditor().getEditorComponent()).getText().toLowerCase().trim();
+    private void updateProductTable(String searchTerm) {
+        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+        model.setRowCount(0);
 
-        if (searchTerm.isEmpty()) {
-            searchComboBox.setPopupVisible(false);
-            return;
-        }
-
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         stockService.getAllStocks().stream()
-                .filter(stock -> stock.getName().toLowerCase().contains(searchTerm))
+                .filter(stock -> stock.getName().toLowerCase().contains(searchTerm.toLowerCase()))
                 .limit(10)
-                .forEach(stock -> model.addElement(stock.getName()));
-
-        searchComboBox.setModel(model);
-
-        if (model.getSize() > 0) {
-            searchComboBox.setPopupVisible(true);
-        }
-
-        JTextField editor = (JTextField) searchComboBox.getEditor().getEditorComponent();
-        editor.setText(searchTerm);
-        editor.setCaretPosition(searchTerm.length());
-
-
-    }
-
-    private void handleSearchSelection() {
-        String selected = (String) searchComboBox.getSelectedItem();
-        if (selected != null) {
-            stockService.findStock(selected).ifPresent(stock -> {
-                currentQuantityLabel.setText("Current Quantity: " + stock.getQuantity() + " " + stock.getUnit());
-                priceField.setText(String.valueOf(stock.getPrice()));
-                quantityField.setText(String.valueOf(stock.getQuantity()));
-            });
-        }
-
+                .forEach(stock -> model.addRow(new Object[]{stock.getName()}));
     }
 
     private void removeStock() {
         try {
-            String name = (String) searchComboBox.getSelectedItem();
-            if (name == null || name.isEmpty()) {
+            int selectedRow = productTable.getSelectedRow();
+            if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this, "Please select a product!");
                 return;
             }
 
+            String name = (String) productTable.getValueAt(selectedRow, 0);
             int quantity = Integer.parseInt(quantityField.getText());
             double price = Double.parseDouble(priceField.getText());
 
-            if (stockService.findStock(name).isPresent()) {
-                Stock stock = stockService.findStock(name).get();
+            stockService.findStock(name).ifPresent(stock -> {
                 if (stock.getQuantity() >= quantity) {
                     stockService.removeStock(name, quantity, price);
                     JOptionPane.showMessageDialog(this, "Stock successfully removed!");
                     clearFields();
+                    updateProductTable(searchField.getText());
                 } else {
                     JOptionPane.showMessageDialog(this,
-                            "Insufficient stock! Available quantity: " + stock.getQuantity() + " " + stock.getUnit());
+                            "Insufficient stock! Available: " + stock.getQuantity() + " " + stock.getUnit());
                 }
-            }
+            });
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity or price!");
+            JOptionPane.showMessageDialog(this, "Please enter valid numbers for quantity and price!");
         }
     }
 
     private void clearFields() {
-        searchComboBox.setSelectedItem("");
+        searchField.setText("");
         quantityField.setText("");
         priceField.setText("");
-        currentQuantityLabel.setText("");
-     
+        currentQuantityField.setText("");
+        updateProductTable("");
+    }
 
+    public void cleanup() {
+        if (searchTimer != null) searchTimer.stop();
+        if (refreshTimer != null) refreshTimer.stop();
     }
 }
