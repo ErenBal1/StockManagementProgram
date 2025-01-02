@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class MainFrame extends JFrame {
     private final CardLayout cardLayout;
@@ -19,7 +20,7 @@ public class MainFrame extends JFrame {
     private static final Color BUTTON_COLOR = new Color(60, 141, 188);
     private static final Color HOVER_COLOR = new Color(45, 125, 170);
 
-    public MainFrame(StockService stockService) {
+    public MainFrame(StockService stockService) throws SQLException {
         this.stockService = stockService;
 
         setupTheme();
@@ -57,7 +58,7 @@ public class MainFrame extends JFrame {
         UIManager.put("Button.font", new Font("Arial", Font.BOLD, 12));
     }
 
-    private void initializeComponents() {
+    private void initializeComponents() throws SQLException {
         // Login panel
         LoginPanel loginPanel = new LoginPanel(new LoginPanel.LoginCallback() {
             @Override
@@ -81,7 +82,7 @@ public class MainFrame extends JFrame {
         add(mainPanel);
     }
 
-    private JPanel createMainMenuPanel() {
+    private JPanel createMainMenuPanel() throws SQLException {
         JPanel panel = new GradientPanel();
         panel.setLayout(new BorderLayout(10, 10));
 

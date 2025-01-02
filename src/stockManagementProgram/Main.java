@@ -14,7 +14,7 @@ import java.sql.*;
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         DbHelper helper=new DbHelper();
         Connection conn=null;
         try{
@@ -28,7 +28,12 @@ public class Main {
 
         }catch(SQLException e){
             helper.showErrorMessage(e);
+        } finally {
+            if (conn != null) {
+                conn.close();
+            }
         }
+
         try {
             // Look and Feel setting
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -42,7 +47,12 @@ public class Main {
 
         // GUI initialisation
         SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame(stockService);
+            MainFrame mainFrame = null;
+            try {
+                mainFrame = new MainFrame(stockService);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             mainFrame.setVisible(true);
         });
     }
