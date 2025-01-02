@@ -215,6 +215,7 @@ public class StockRemovePanel extends JPanel {
             int quantity = Integer.parseInt(quantityField.getText());
             double price = Double.parseDouble(priceField.getText());
 
+//hatali bura
 
 
 
