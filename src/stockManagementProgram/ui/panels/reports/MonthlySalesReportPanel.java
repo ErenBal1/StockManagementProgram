@@ -1,5 +1,7 @@
 package stockManagementProgram.ui.panels.reports;
 
+import stockManagementProgram.config.AppConfig;
+import stockManagementProgram.config.DbHelper;
 import stockManagementProgram.model.Stock;
 import stockManagementProgram.model.StockTransaction;
 import stockManagementProgram.model.enums.TransactionType;
@@ -11,7 +13,12 @@ import stockManagementProgram.util.PriceFormatter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class MonthlySalesReportPanel extends JPanel {
     private final StockService stockService;
@@ -44,31 +51,70 @@ public class MonthlySalesReportPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        generateButton.addActionListener(e -> generateReport());
+        generateButton.addActionListener(e -> {
+            try {
+                generateReport();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
-    private void generateReport() {
+    private void generateReport() throws SQLException {
         tableModel.setRowCount(0);
         double totalSales = 0;
         LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
-
-        for (Stock stock : stockService.getAllStocks()) {
-            for (StockTransaction trans : stock.getTransactions()) {
-                if (trans.getDateTime().isAfter(startOfMonth) &&
-                        trans.getType() == TransactionType.REMOVAL) {
-                    double amount = trans.getQuantity() * trans.getPrice();
-                    totalSales += amount;
+        Connection conn=null;
+        Statement stmt=null;
+        DbHelper helper=new DbHelper();
+        try{
+            conn=helper.getConnection();
+            String query="SELECT * FROM TransactionTable";
+            stmt=conn.createStatement();
+            ResultSet rs=stmt.executeQuery(query);
+            while (rs.next()){
+               if (Objects.equals(rs.getString(3), "REMOVE")){
+                   double amount = rs.getInt("Quantity") * rs.getDouble("Price");
+                   totalSales += amount;
                     tableModel.addRow(new Object[]{
-                            DateFormatter.format(trans.getDateTime()),
-                            stock.getName(),
-                            trans.getQuantity(),
-                            stock.getUnit(),
-                            PriceFormatter.format(trans.getPrice()),
+                            rs.getString(7),
+                            rs.getString(2),
+                            rs.getInt("Quantity"),
+                            rs.getString("Unit"),
+                            PriceFormatter.format(rs.getDouble("Price")),
                             PriceFormatter.format(amount)
                     });
                 }
             }
+        }catch (SQLException e){
+            helper.showErrorMessage(e);
+        }finally {
+            if (conn!=null) {
+                conn.close();
+            }
+            if (stmt!=null){
+                stmt.close();
+            }
         }
+
+
+//        for (Stock stock : stockService.getAllStocks()) {
+//            for (StockTransaction trans : stock.getTransactions()) {
+//                if (trans.getDateTime().isAfter(startOfMonth) &&
+//                        trans.getType() == TransactionType.REMOVAL) {
+//                    double amount = trans.getQuantity() * trans.getPrice();
+//                    totalSales += amount;
+//                    tableModel.addRow(new Object[]{
+//                            DateFormatter.format(trans.getDateTime()),
+//                            stock.getName(),
+//                            trans.getQuantity(),
+//                            stock.getUnit(),
+//                            PriceFormatter.format(trans.getPrice()),
+//                            PriceFormatter.format(amount)
+//                    });
+//                }
+//            }
+//        }
 
         tableModel.addRow(new Object[]{
                 "TOTAL", "", "", "", "", PriceFormatter.format(totalSales)

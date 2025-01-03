@@ -91,7 +91,7 @@ public class RecentTransactionsPanel extends JPanel {
                         rs.getInt(4),
                         rs.getString(5),
                         rs.getInt(6),
-                        PriceFormatter.format(rs.getDouble(3))
+                        PriceFormatter.format(rs.getDouble(6)*rs.getInt(4))
                 });
             }
         }catch (SQLException e){

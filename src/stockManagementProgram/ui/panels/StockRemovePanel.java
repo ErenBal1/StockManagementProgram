@@ -4,6 +4,7 @@ import stockManagementProgram.config.DbHelper;
 import stockManagementProgram.model.Stock;
 import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
+import stockManagementProgram.util.DateFormatter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class StockRemovePanel extends JPanel {
     private final StockService stockService;
@@ -202,9 +204,12 @@ public class StockRemovePanel extends JPanel {
     }
 
     private void removeStock() {
-        DbHelper helper=new DbHelper();
-        Connection conn=null;
-        PreparedStatement preparedstmt=null;
+        DbHelper helper = new DbHelper();
+        Connection conn = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+        ArrayList<String> productsNames = new ArrayList<>();
+
         try {
             String name = nameField.getText();
             if (name.isEmpty()) {
@@ -215,86 +220,72 @@ public class StockRemovePanel extends JPanel {
             int quantity = Integer.parseInt(quantityField.getText());
             double price = Double.parseDouble(priceField.getText());
 
-//hatali bura
+            conn = helper.getConnection();
+            conn.setAutoCommit(false); // Transaction başlat AI yapti burayi
 
 
+            String query = "SELECT * FROM ProductStock WHERE ProductName LIKE ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, name + "%");
+            rs = preparedStatement.executeQuery();
 
-            if (stockService.findStock(name).isPresent()) {
-                Stock stock = stockService.findStock(name).get();
-                if (stock.getQuantity() >= quantity) {
-                    try{
-                        conn=helper.getConnection();
-                        System.out.println("Başarılı şekilde Removelama işlemine bağlandı");
-                        String query="Update ProductStock set ProductQuantity = ProductQuantity - ? ,ProductUpdateDate= ? Where ProductName = ?";
+            while (rs.next()) {
+                productsNames.add(rs.getString("ProductName"));
+            }
+
+            for (String productName : productsNames) {
+                if (productName.equals(name)) {
+                    query = "SELECT * FROM ProductStock WHERE ProductName = ?";
+                    preparedStatement = conn.prepareStatement(query);
+                    preparedStatement.setString(1, name);
+                    rs = preparedStatement.executeQuery();
+
+                    if (rs.next() && rs.getInt("ProductQuantity") >= quantity) {
+                        query = "UPDATE ProductStock SET ProductQuantity = ProductQuantity - ? WHERE ProductName = ?";
+                        preparedStatement = conn.prepareStatement(query);
+                        preparedStatement.setInt(1, quantity);
+                        preparedStatement.setString(2, name);
+                        preparedStatement.executeUpdate();
+
+                        // Transaction kaydı ekleme
+                        query = "INSERT INTO TransactionTable (ProductName, [Transaction], Quantity, Unit, Price, Date) VALUES (?, ?, ?, ?, ?, ?)";
+                        preparedStatement = conn.prepareStatement(query);
                         Date now = new Date();
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         String formattedDate = formatter.format(now);
-                        preparedstmt=conn.prepareStatement(query);
-                        preparedstmt.setInt(1,quantity);
-                        preparedstmt.setString(2,formattedDate);
-                        preparedstmt.setString(3,name);
-                        preparedstmt.executeUpdate();
-                        System.out.println("Başarılı şekilde güncellendi");
 
-                    }catch (SQLException e){
-                        helper.showErrorMessage(e);
-                    }finally {
-                        try {
-                            if (preparedstmt!=null){
-                                preparedstmt.close();
-                            }
-                            if (conn!=null){
-                                conn.close();
-                            }
-                        }catch (SQLException e ){
-                            System.out.println(e.getMessage());
-                        }
+                        preparedStatement.setString(1, name);
+                        preparedStatement.setString(2, "REMOVE");
+                        preparedStatement.setInt(3, quantity);
+                        preparedStatement.setString(4, rs.getString("ProductUnit"));
+                        preparedStatement.setDouble(5, price);
+                        preparedStatement.setString(6, formattedDate);
+                        preparedStatement.executeUpdate();
+
+                        JOptionPane.showMessageDialog(this, "Stock successfully removed!");
+                        clearFields();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Insufficient stock quantity!");
                     }
-
-
-                    try {
-
-                        conn= helper.getConnection();
-                        System.out.println("Transaction dbye bağlandı");
-                        String query="INSERT INTO TransactionTable (ProductName,[Transaction],Quantity,Unit,Price,Date) Values(?,?,?,?,?,?)";
-                        Date now=new Date();
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String formattedDate = formatter.format(now);
-                        preparedstmt=conn.prepareStatement(query);
-                        preparedstmt.setString(1,name);
-                        preparedstmt.setString(2,"REMOVE");
-                        preparedstmt.setInt(3,quantity);
-                        preparedstmt.setString(4,String.valueOf(stock.getUnit()));
-                        preparedstmt.setDouble(5,price);
-                        preparedstmt.setString(6,formattedDate);
-                        preparedstmt.executeUpdate();
-
-
-
-                    }catch (SQLException e){
-                        helper.showErrorMessage(e);
-                    }finally {
-                        if (preparedstmt!=null){
-                            preparedstmt.close();
-                        }
-                        if (conn!=null){
-                            conn.close();
-                        }
-                    }
-
-
-
-
-                    stockService.removeStock(name, quantity, price);
-                    JOptionPane.showMessageDialog(this, "Stock successfully removed!");
-                    clearFields();
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Insufficient stock quantity! Quantity available: " + stock.getQuantity() + " " + stock.getUnit());
+                    break;
                 }
             }
-        } catch (NumberFormatException | SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity or price!");
+            conn.commit(); // Transaction onayla
+        } catch (SQLException | NumberFormatException e) {
+            try {
+                if (conn != null) conn.rollback(); // Hata olursa geri al
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 

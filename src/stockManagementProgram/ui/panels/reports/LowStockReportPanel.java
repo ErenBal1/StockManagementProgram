@@ -1,14 +1,20 @@
 package stockManagementProgram.ui.panels.reports;
 
 import stockManagementProgram.config.AppConfig;
+import stockManagementProgram.config.DbHelper;
 import stockManagementProgram.model.Stock;
 import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
 import stockManagementProgram.util.DateFormatter;
+import stockManagementProgram.util.PriceFormatter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 
 public class LowStockReportPanel extends JPanel {
@@ -55,21 +61,58 @@ public class LowStockReportPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        generateButton.addActionListener(e -> generateReport());
+        generateButton.addActionListener(e -> {
+            try {
+                generateReport();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
-    private void generateReport() {
+    private void generateReport() throws SQLException {
         tableModel.setRowCount(0);
-        for (Stock stock : stockService.getAllStocks()) {
-            if (stock.getQuantity() < AppConfig.CRITICAL_STOCK_LEVEL) {
-                tableModel.addRow(new Object[]{
-                        stock.getName(),
-                        stock.getQuantity(),
-                        stock.getUnit(),
-                        "CRITICAL LEVEL"
-                });
+
+        Connection conn=null;
+        Statement stmt=null;
+        DbHelper helper=new DbHelper();
+        try{
+            conn=helper.getConnection();
+            String query="SELECT * FROM ProductStock";
+            stmt=conn.createStatement();
+            ResultSet rs=stmt.executeQuery(query);
+            while (rs.next()){
+                if (rs.getInt("ProductQuantity")< AppConfig.CRITICAL_STOCK_LEVEL) {
+                    tableModel.addRow(new Object[]{
+                            rs.getString(2),
+                            rs.getInt(4),
+                            rs.getString(5),
+                            "CRITICAL LEVEL"
+                    });
+                }
+            }
+        }catch (SQLException e){
+            helper.showErrorMessage(e);
+        }finally {
+            if (conn!=null) {
+                conn.close();
+            }
+            if (stmt!=null){
+                stmt.close();
             }
         }
+
+
+//        for (Stock stock : stockService.getAllStocks()) {
+//            if (stock.getQuantity() < AppConfig.CRITICAL_STOCK_LEVEL) {
+//                tableModel.addRow(new Object[]{
+//                        stock.getName(),
+//                        stock.getQuantity(),
+//                        stock.getUnit(),
+//                        "CRITICAL LEVEL"
+//                });
+//            }
+//        }
         lastGeneratedLabel.setText("Last update: " +
                 DateFormatter.format(LocalDateTime.now()));
     }
