@@ -5,8 +5,8 @@ import java.awt.*;
 public class AppConfig {
     public static final int CRITICAL_STOCK_LEVEL = 10;
     public static final String APP_TITLE = "Stock Management System";
-    public static final String DEFAULT_USERNAME = "admin";
-    public static final String DEFAULT_PASSWORD = "123456";
+    public static String DEFAULT_USERNAME = "";
+    public static String DEFAULT_PASSWORD = "";
 
     // UI Colors
     public static final Color THEME_COLOR = new Color(60, 141, 188);

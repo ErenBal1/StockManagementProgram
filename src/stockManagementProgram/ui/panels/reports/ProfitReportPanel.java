@@ -1,5 +1,6 @@
 package stockManagementProgram.ui.panels.reports;
 
+import stockManagementProgram.config.DbHelper;
 import stockManagementProgram.model.Stock;
 import stockManagementProgram.model.StockTransaction;
 import stockManagementProgram.model.enums.TransactionType;
@@ -11,7 +12,11 @@ import stockManagementProgram.util.PriceFormatter;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class ProfitReportPanel extends JPanel {
     private final StockService stockService;
@@ -57,38 +62,71 @@ public class ProfitReportPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        generateButton.addActionListener(e -> generateReport());
+        generateButton.addActionListener(e -> {
+            try {
+                generateReport();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
-    private void generateReport() {
+    private void generateReport() throws SQLException {
         tableModel.setRowCount(0);
         double totalProfit = 0;
+        DbHelper helper = new DbHelper();
 
-        for (Stock stock : stockService.getAllStocks()) {
-            int totalSoldQuantity = 0;
-            double totalRevenue = 0;
-            double totalCost = 0;
+        String transactionQuery = "SELECT * FROM TransactionTable";
+        String stockQuery = "SELECT ProductName, ProductPrice FROM ProductStock";
 
-            for (StockTransaction trans : stock.getTransactions()) {
-                if (trans.getType() == TransactionType.REMOVAL) {
-                    totalSoldQuantity += trans.getQuantity();
-                    totalRevenue += trans.getQuantity() * trans.getPrice();
-                    totalCost += trans.getQuantity() * stock.getPrice();
+        try (Connection conn = helper.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet transactionRs = stmt.executeQuery(transactionQuery)) {
+
+            Map<String, Double> productPrices = new HashMap<>();
+            try (Statement stockStmt = conn.createStatement();
+                 ResultSet stockRs = stockStmt.executeQuery(stockQuery)) {
+                while (stockRs.next()) {
+                    productPrices.put(stockRs.getString("ProductName"), stockRs.getDouble("ProductPrice"));
                 }
             }
 
-            if (totalSoldQuantity > 0) {
-                double profit = totalRevenue - totalCost;
-                totalProfit += profit;
-                tableModel.addRow(new Object[]{
-                        stock.getName(),
-                        totalSoldQuantity,
-                        stock.getUnit(),
-                        PriceFormatter.format(totalRevenue),
-                        PriceFormatter.format(totalCost),
-                        PriceFormatter.format(profit)
-                });
+            while (transactionRs.next()) {
+                int totalSoldQuantity = 0;
+                double totalRevenue = 0;
+                double totalCost = 0;
+
+                if ("REMOVE".equals(transactionRs.getString("Transaction"))) {
+                    int quantity = transactionRs.getInt("Quantity");
+                    String productName = transactionRs.getString("ProductName");
+                    double price = transactionRs.getDouble("Price");
+
+                    totalSoldQuantity += quantity;
+                    totalRevenue += quantity * price;
+
+                    if (productPrices.containsKey(productName)) {
+                        totalCost += quantity * productPrices.get(productName);
+                    } else {
+                        System.err.println("Ürün fiyatı bulunamadı: " + productName);
+                    }
+                }
+
+                if (totalSoldQuantity > 0) {
+                    double profit = totalRevenue - totalCost;
+                    totalProfit += profit;
+
+                    tableModel.addRow(new Object[]{
+                            transactionRs.getString("ProductName"),
+                            totalSoldQuantity,
+                            transactionRs.getString("Unit"),
+                            PriceFormatter.format(totalRevenue),
+                            PriceFormatter.format(totalCost),
+                            PriceFormatter.format(profit)
+                    });
+                }
             }
+        } catch (SQLException e) {
+            helper.showErrorMessage(e);
         }
 
         tableModel.addRow(new Object[]{

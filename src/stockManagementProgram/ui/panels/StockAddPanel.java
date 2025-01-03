@@ -1,11 +1,17 @@
 package stockManagementProgram.ui.panels;
 
+import stockManagementProgram.config.DbHelper;
 import stockManagementProgram.model.enums.Unit;
 import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class StockAddPanel extends JPanel {
@@ -78,13 +84,25 @@ public class StockAddPanel extends JPanel {
     }
 
     private void setupListeners(JButton searchButton, JButton addButton, JButton resetButton) {
-        searchButton.addActionListener(e -> performSearch());
-        searchResults.addActionListener(e -> handleSearchSelection());
+        searchButton.addActionListener(e -> {
+            try {
+                performSearch();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        searchResults.addActionListener(e -> {
+            try {
+                handleSearchSelection();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         addButton.addActionListener(e -> addStock());
         resetButton.addActionListener(e -> clearFields());
     }
 
-    private void performSearch() {
+    private void performSearch() throws SQLException {
         String searchTerm = searchField.getText().toLowerCase().trim();
         searchResults.removeAllItems();
 
@@ -93,21 +111,74 @@ public class StockAddPanel extends JPanel {
                     .filter(stock -> stock.getName().toLowerCase().contains(searchTerm))
                     .collect(Collectors.toList());
 
-            matchingStocks.forEach(stock -> searchResults.addItem(stock.getName()));
+            //matchingStocks.forEach(stock -> searchResults.addItem(stock.getName()));
+
+            Connection conn= null;
+            PreparedStatement preparedStatement=null;
+            DbHelper helper=new DbHelper();
+            ArrayList<String> productsNames=new ArrayList<>();
+            try{
+                conn=helper.getConnection();
+                String query="Select * FROM ProductStock WHERE ProductName like ?";
+                preparedStatement=conn.prepareStatement(query);
+                preparedStatement.setString(1,searchTerm+"%");
+                ResultSet rs=preparedStatement.executeQuery();
+                int sizeOfSearching=0;
+
+                while (rs.next()){
+                    searchResults.addItem(rs.getString(2));
+                    System.out.println("Product name: "+rs.getString(2));
+                    productsNames.add(sizeOfSearching,rs.getString(2));
+                    sizeOfSearching++;
+                }
+
+            }catch (SQLException e){
+                helper.showErrorMessage(e);
+
+            }finally {
+                if (conn!=null){
+                    conn.close();
+                }
+                if (preparedStatement!=null){
+                    preparedStatement.close();
+                }
+            }
+
 
             searchResults.addItem("Add New Product");
 
             if (!matchingStocks.isEmpty()) {
-                String firstMatch = matchingStocks.get(0).getName();
+                String firstMatch=productsNames.get(0);
                 searchResults.setSelectedItem(firstMatch);
                 nameField.setText(firstMatch);
                 nameField.setEditable(false);
 
-                stockService.findStock(firstMatch).ifPresent(stock -> {
-                    priceField.setText(String.valueOf(stock.getPrice()));
-                    unitComboBox.setSelectedItem(stock.getUnit());
+                try{
+                    conn=helper.getConnection();
+                    String query="Select * FROM ProductStock WHERE ProductName = ?";
+                    preparedStatement=conn.prepareStatement(query);
+                    preparedStatement.setString(1,firstMatch);
+                    ResultSet rs=preparedStatement.executeQuery();
+
+                    searchResults.setSelectedItem(firstMatch);
+                    nameField.setText(firstMatch);
+                    nameField.setEditable(false);
+                    priceField.setText(rs.getString(3));
+                    unitComboBox.setSelectedItem(rs.getString(5));
                     unitComboBox.setEnabled(false);
-                });
+
+                }catch (SQLException e){
+                    helper.showErrorMessage(e);
+
+                }finally {
+                    if (conn!=null){
+                        conn.close();
+                    }
+                    if (preparedStatement!=null){
+                        preparedStatement.close();
+                    }
+                }
+
             } else {
                 searchResults.setSelectedItem("Add New Product");
                 nameField.setText(searchTerm);
@@ -124,7 +195,10 @@ public class StockAddPanel extends JPanel {
         }
     }
 
-private void handleSearchSelection() {
+private void handleSearchSelection() throws SQLException {
+    Connection conn= null;
+    PreparedStatement preparedStatement=null;
+    DbHelper helper=new DbHelper();
         String selected = (String) searchResults.getSelectedItem();
         if (selected != null) {
             if (selected.equals("Add New Product")) {
@@ -140,16 +214,39 @@ private void handleSearchSelection() {
             } else {
                 nameField.setText(selected);
                 nameField.setEditable(false);
-                stockService.findStock(selected).ifPresent(stock -> {
-                    priceField.setText(String.valueOf(stock.getPrice()));
-                    unitComboBox.setSelectedItem(stock.getUnit());
+
+                try{
+                    conn=helper.getConnection();
+                    String query="Select * FROM ProductStock WHERE ProductName = ?";
+                    preparedStatement=conn.prepareStatement(query);
+                    preparedStatement.setString(1,selected);
+                    ResultSet rs=preparedStatement.executeQuery();
+
+                    priceField.setText(rs.getString(3));
+                    unitComboBox.setSelectedItem(rs.getString(5));
+                    searchResults.setSelectedItem(selected);
                     unitComboBox.setEnabled(false);
-                });
+
+                }catch (SQLException e){
+                    helper.showErrorMessage(e);
+
+                }finally {
+                    if (conn!=null){
+                        conn.close();
+                    }
+                    if (preparedStatement!=null){
+                        preparedStatement.close();
+                    }
+                }
+
             }
         }
     }
 
     private void addStock() {
+        DbHelper helper=new DbHelper();
+        Connection conn=null;
+        PreparedStatement preparedstmt=null;
         try {
             String name = nameField.getText().trim();
             if (name.isEmpty()) {
@@ -161,21 +258,108 @@ private void handleSearchSelection() {
             double price = Double.parseDouble(priceField.getText());
             Unit selectedUnit = (Unit) unitComboBox.getSelectedItem();
 
+            try {
+                conn= helper.getConnection();
+                System.out.println("Transaction dbye bağlandı");
+                String query="INSERT INTO TransactionTable (ProductName,[Transaction],Quantity,Unit,Price,Date) Values(?,?,?,?,?,?)";
+                Date now=new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String formattedDate = formatter.format(now);
+                preparedstmt=conn.prepareStatement(query);
+                preparedstmt.setString(1,name);
+                preparedstmt.setString(2,"ADD");
+                preparedstmt.setInt(3,quantity);
+                preparedstmt.setString(4, String.valueOf(selectedUnit));
+                preparedstmt.setDouble(5,price);
+                preparedstmt.setString(6,formattedDate);
+                preparedstmt.executeUpdate();
+
+
+            }catch (SQLException e){
+                helper.showErrorMessage(e);
+            }finally {
+                if (preparedstmt!=null){
+                    preparedstmt.close();
+                }
+                if (conn!=null){
+                    conn.close();
+                }
+            }
+
             if (nameField.isEditable()) {
                 if (stockService.existsByName(name)) {
                     handleExistingStock(name, quantity, price, selectedUnit);
                 } else {
+                    try{
+                        conn=helper.getConnection();
+                        System.out.println("Başarılı şekilde bağlandı");
+                        String query="INSERT INTO ProductStock (ProductName,ProductPrice,ProductQuantity,ProductUnit,ProductInsertDate) Values(?,?,?,?,?)";
+                        preparedstmt=conn.prepareStatement(query);
+
+                        preparedstmt.setString(1,name);
+                        preparedstmt.setDouble(2,price);
+                        preparedstmt.setInt(3,quantity);
+                        preparedstmt.setString(4, String.valueOf(selectedUnit));
+                        Date now = new Date();
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                        String formattedDate = formatter.format(now);
+                        System.out.println("Formatted Date: " + formattedDate);
+
+                        preparedstmt.setString(5, formattedDate);
+                        preparedstmt.executeUpdate();
+                        System.out.println("Başarılı şekilde eklendi");
+
+                    }catch (SQLException e){
+                        helper.showErrorMessage(e);
+                    }finally {
+                        if (preparedstmt != null) {
+                            preparedstmt.close();
+                        }
+                        if (conn != null) {
+                            conn.close();
+                        }
+                    }
                     stockService.addStock(name, quantity, price, selectedUnit);
                     JOptionPane.showMessageDialog(this, "New stock successfully added!");
                 }
             } else {
+                try{
+                    conn=helper.getConnection();
+                    System.out.println("Başarılı şekilde bağlandı");
+                    String query="Update ProductStock set ProductQuantity = ProductQuantity + ? ,ProductPrice = ? ,ProductUpdateDate= ? Where ProductName = ?";
+                    Date now = new Date();
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    String formattedDate = formatter.format(now);
+                    preparedstmt=conn.prepareStatement(query);
+                    preparedstmt.setInt(1,quantity);
+                    preparedstmt.setDouble(2,price);
+                    preparedstmt.setString(3,formattedDate);
+                    preparedstmt.setString(4,name);
+                    preparedstmt.executeUpdate();
+                    System.out.println("Başarılı şekilde güncellendi");
+
+                }catch (SQLException e){
+                    helper.showErrorMessage(e);
+                }finally {
+                    try {
+                        if (preparedstmt!=null){
+                            preparedstmt.close();
+                        }
+                        if (conn!=null){
+                            conn.close();
+                        }
+                    }catch (SQLException e ){
+                        System.out.println(e.getMessage());
+                    }
+                }
                 stockService.addStock(name, quantity, price, selectedUnit);
                 JOptionPane.showMessageDialog(this, "Stock successfully updated!");
             }
 
             clearFields();
 
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Invalid quantity or price!");
         }
     }

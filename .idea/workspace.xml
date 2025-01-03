@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="254335f2-7e76-45be-bce8-ab5c7e17967d" name="Changes" comment="All functions and UI elements added.">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="254335f2-7e76-45be-bce8-ab5c7e17967d" name="Changes" comment="Connections with database are established but removestock part is still incorrect">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/RecentTransactionsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/RecentTransactionsPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockRemovePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockRemovePanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/LowStockReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/LowStockReportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/MonthlySalesReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/MonthlySalesReportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/ProfitReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/ProfitReportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/StockValueReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/StockValueReportPanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +47,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/ErenBal1/StockManagementProgram.git&quot;,
-    &quot;accountId&quot;: &quot;2df845aa-0f56-4bd5-8cbb-5f7d37a7b11a&quot;
+    &quot;accountId&quot;: &quot;19f63cae-e617-4d0c-834b-770aefa899f7&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -65,14 +68,15 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "eb",
+    "git-widget-placeholder": "bg",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/barkin/Downloads/hekelebe56/StockManagementProgram",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Project",
+    "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "vue.rearranger.settings.migration": "true"
@@ -97,14 +101,6 @@
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
-        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -144,16 +140,52 @@
       <option name="project" value="LOCAL" />
       <updated>1734957744236</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="All functions and UI elements added.">
+      <option name="closed" value="true" />
+      <created>1735308847453</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1735308847453</updated>
+    </task>
+    <task id="LOCAL-00005" summary="All functions and UI elements added.">
+      <option name="closed" value="true" />
+      <created>1735826702953</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1735826702953</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Connections with database are established but removestock part is still incorrect">
+      <option name="closed" value="true" />
+      <created>1735826784125</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1735826784125</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First Commit" />
     <MESSAGE value="Branch Control" />
     <MESSAGE value="All functions and UI elements added." />
-    <option name="LAST_COMMIT_MESSAGE" value="All functions and UI elements added." />
+    <MESSAGE value="Connections with database are established but removestock part is still incorrect" />
+    <option name="LAST_COMMIT_MESSAGE" value="Connections with database are established but removestock part is still incorrect" />
   </component>
 </project>
