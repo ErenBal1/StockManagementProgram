@@ -127,11 +127,10 @@ public class StockRemovePanel extends JPanel {
             preparedStatement.setString(1, searchTerm + "%");
             ResultSet rs = preparedStatement.executeQuery();
 
-            // Arama sonuçlarını combobox'a ekleyelim
             while (rs.next()) {
                 String productName = rs.getString(2);
                 searchResults.addItem(productName);
-                productsNames.add(productName); // Sonuçları listeye ekliyoruz
+                productsNames.add(productName);
             }
         } catch (SQLException e) {
             helper.showErrorMessage(e);
@@ -144,12 +143,11 @@ public class StockRemovePanel extends JPanel {
             }
         }
 
-        // Eğer herhangi bir sonuç varsa, ilk ürünü seçelim
         if (!productsNames.isEmpty()) {
-            String firstMatch = productsNames.get(0); // İlk eşleşeni alıyoruz
-            searchResults.setSelectedItem(firstMatch); // Combobox'a seçiyoruz
-            nameField.setText(firstMatch); // nameField'a yazdırıyoruz
-            nameField.setEditable(false); // nameField'ı düzenlenemez yapıyoruz
+            String firstMatch = productsNames.get(0);
+            searchResults.setSelectedItem(firstMatch);
+            nameField.setText(firstMatch);
+            nameField.setEditable(false);
         } else {
             searchResults.setSelectedItem("Add New Product");
             nameField.setText(searchTerm);
@@ -196,10 +194,6 @@ public class StockRemovePanel extends JPanel {
             }
 
 
-//            stockService.findStock(selected).ifPresent(stock -> {
-//                currentQuantityLabel.setText("Current Quantity: " + stock.getQuantity() + " " + stock.getUnit());
-//                priceField.setText(String.valueOf(stock.getPrice()));
-//            });
         }
     }
 
@@ -221,7 +215,7 @@ public class StockRemovePanel extends JPanel {
             double price = Double.parseDouble(priceField.getText());
 
             conn = helper.getConnection();
-            conn.setAutoCommit(false); // Transaction başlat AI yapti burayi
+            conn.setAutoCommit(false); // Transaction başlat AI
 
 
             String query = "SELECT * FROM ProductStock WHERE ProductName LIKE ?";
@@ -247,7 +241,6 @@ public class StockRemovePanel extends JPanel {
                         preparedStatement.setString(2, name);
                         preparedStatement.executeUpdate();
 
-                        // Transaction kaydı ekleme
                         query = "INSERT INTO TransactionTable (ProductName, [Transaction], Quantity, Unit, Price, Date) VALUES (?, ?, ?, ?, ?, ?)";
                         preparedStatement = conn.prepareStatement(query);
                         Date now = new Date();

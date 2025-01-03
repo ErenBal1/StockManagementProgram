@@ -75,13 +75,5 @@ public class StockViewPanel extends JPanel {
             }
         }
 
-//        for (Stock stock : stockService.getAllStocks()) {
-//            tableModel.addRow(new Object[]{
-//                    stock.getName(),
-//                    stock.getQuantity(),
-//                    stock.getUnit(),
-//                    PriceFormatter.format(stock.getPrice())
-//            });
-//        }
     }
 }

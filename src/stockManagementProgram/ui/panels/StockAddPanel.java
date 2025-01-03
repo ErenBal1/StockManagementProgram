@@ -148,18 +148,10 @@ public class StockAddPanel extends JPanel {
             searchResults.addItem("Add New Product");
 
             if (!matchingStocks.isEmpty()) {
-//                String firstMatch = matchingStocks.get(0).getName();
                 String firstMatch=productsNames.get(0);
                 searchResults.setSelectedItem(firstMatch);
                 nameField.setText(firstMatch);
                 nameField.setEditable(false);
-
-//                stockService.findStock(firstMatch).ifPresent(stock -> {
-//                    priceField.setText(String.valueOf(stock.getPrice()));
-//                    unitComboBox.setSelectedItem(stock.getUnit());
-//                    unitComboBox.setEnabled(false);
-//                });
-
 
                 try{
                     conn=helper.getConnection();
@@ -223,8 +215,6 @@ private void handleSearchSelection() throws SQLException {
                 nameField.setText(selected);
                 nameField.setEditable(false);
 
-
-
                 try{
                     conn=helper.getConnection();
                     String query="Select * FROM ProductStock WHERE ProductName = ?";
@@ -249,13 +239,6 @@ private void handleSearchSelection() throws SQLException {
                     }
                 }
 
-
-
-//                stockService.findStock(selected).ifPresent(stock -> {
-//                    priceField.setText(String.valueOf(stock.getPrice()));
-//                    unitComboBox.setSelectedItem(stock.getUnit());
-//                    unitComboBox.setEnabled(false);
-//                });
             }
         }
     }
@@ -303,12 +286,6 @@ private void handleSearchSelection() throws SQLException {
                 }
             }
 
-
-
-
-
-
-
             if (nameField.isEditable()) {
                 if (stockService.existsByName(name)) {
                     handleExistingStock(name, quantity, price, selectedUnit);
@@ -318,8 +295,6 @@ private void handleSearchSelection() throws SQLException {
                         System.out.println("Başarılı şekilde bağlandı");
                         String query="INSERT INTO ProductStock (ProductName,ProductPrice,ProductQuantity,ProductUnit,ProductInsertDate) Values(?,?,?,?,?)";
                         preparedstmt=conn.prepareStatement(query);
-
-
 
                         preparedstmt.setString(1,name);
                         preparedstmt.setDouble(2,price);

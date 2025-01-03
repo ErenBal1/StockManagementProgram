@@ -63,7 +63,6 @@ public class MonthlySalesReportPanel extends JPanel {
     private void generateReport() throws SQLException {
         tableModel.setRowCount(0);
         double totalSales = 0;
-        LocalDateTime startOfMonth = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0);
         Connection conn=null;
         Statement stmt=null;
         DbHelper helper=new DbHelper();
@@ -96,25 +95,6 @@ public class MonthlySalesReportPanel extends JPanel {
                 stmt.close();
             }
         }
-
-
-//        for (Stock stock : stockService.getAllStocks()) {
-//            for (StockTransaction trans : stock.getTransactions()) {
-//                if (trans.getDateTime().isAfter(startOfMonth) &&
-//                        trans.getType() == TransactionType.REMOVAL) {
-//                    double amount = trans.getQuantity() * trans.getPrice();
-//                    totalSales += amount;
-//                    tableModel.addRow(new Object[]{
-//                            DateFormatter.format(trans.getDateTime()),
-//                            stock.getName(),
-//                            trans.getQuantity(),
-//                            stock.getUnit(),
-//                            PriceFormatter.format(trans.getPrice()),
-//                            PriceFormatter.format(amount)
-//                    });
-//                }
-//            }
-//        }
 
         tableModel.addRow(new Object[]{
                 "TOTAL", "", "", "", "", PriceFormatter.format(totalSales)

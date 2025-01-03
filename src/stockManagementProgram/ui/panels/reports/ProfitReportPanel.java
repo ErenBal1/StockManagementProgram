@@ -83,7 +83,6 @@ public class ProfitReportPanel extends JPanel {
              Statement stmt = conn.createStatement();
              ResultSet transactionRs = stmt.executeQuery(transactionQuery)) {
 
-            // ProductStock tablosunu hafızaya al
             Map<String, Double> productPrices = new HashMap<>();
             try (Statement stockStmt = conn.createStatement();
                  ResultSet stockRs = stockStmt.executeQuery(stockQuery)) {
@@ -105,7 +104,6 @@ public class ProfitReportPanel extends JPanel {
                     totalSoldQuantity += quantity;
                     totalRevenue += quantity * price;
 
-                    // Ürün fiyatını hafızadaki mapten al
                     if (productPrices.containsKey(productName)) {
                         totalCost += quantity * productPrices.get(productName);
                     } else {
@@ -131,7 +129,6 @@ public class ProfitReportPanel extends JPanel {
             helper.showErrorMessage(e);
         }
 
-        // Toplam karı ekle
         tableModel.addRow(new Object[]{
                 "TOTAL", "", "", "", "", PriceFormatter.format(totalProfit)
         });

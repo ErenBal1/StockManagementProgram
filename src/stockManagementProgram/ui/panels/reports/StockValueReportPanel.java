@@ -94,19 +94,6 @@ public class StockValueReportPanel extends JPanel {
         }
 
 
-
-//        for (Stock stock : stockService.getAllStocks()) {
-//            double stockValue = stock.getQuantity() * stock.getPrice();
-//            totalValue += stockValue;
-//            tableModel.addRow(new Object[]{
-//                    stock.getName(),
-//                    stock.getQuantity(),
-//                    stock.getUnit(),
-//                    PriceFormatter.format(stock.getPrice()),
-//                    PriceFormatter.format(stockValue)
-//            });
-//        }
-
         tableModel.addRow(new Object[]{"TOTAL", "", "", "",
                 PriceFormatter.format(totalValue)});
         lastGeneratedLabel.setText("Last Update: " +

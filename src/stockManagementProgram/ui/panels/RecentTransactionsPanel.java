@@ -76,7 +76,6 @@ public class RecentTransactionsPanel extends JPanel {
         Statement stmt=null;
         DbHelper helper=new DbHelper();
         tableModel.setRowCount(0);
-//        List<Object[]> transactions = new ArrayList<>();
         try{
             conn=helper.getConnection();
             System.out.println("Başarılı şekilde bağlandı");
@@ -105,22 +104,5 @@ public class RecentTransactionsPanel extends JPanel {
             }
         }
 
-//        for (Stock stock : stockService.getAllStocks()) {
-//            for (StockTransaction trans : stock.getTransactions()) {
-//                double total = trans.getQuantity() * trans.getPrice();
-//                transactions.add(new Object[]{
-//                        DateFormatter.format(trans.getDateTime()),
-//                        stock.getName(),
-//                        trans.getType() == TransactionType.ADDITION ? "ADD" : "REMOVE",
-//                        trans.getQuantity(),
-//                        stock.getUnit(),
-//                        PriceFormatter.format(trans.getPrice()),
-//                        PriceFormatter.format(total)
-//                });
-//            }
-//        }
-//
-//        transactions.sort((a, b) -> String.valueOf(b[0]).compareTo(String.valueOf(a[0])));
-//        transactions.forEach(tableModel::addRow);
     }
 }

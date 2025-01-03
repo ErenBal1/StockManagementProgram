@@ -102,17 +102,6 @@ public class LowStockReportPanel extends JPanel {
             }
         }
 
-
-//        for (Stock stock : stockService.getAllStocks()) {
-//            if (stock.getQuantity() < AppConfig.CRITICAL_STOCK_LEVEL) {
-//                tableModel.addRow(new Object[]{
-//                        stock.getName(),
-//                        stock.getQuantity(),
-//                        stock.getUnit(),
-//                        "CRITICAL LEVEL"
-//                });
-//            }
-//        }
         lastGeneratedLabel.setText("Last update: " +
                 DateFormatter.format(LocalDateTime.now()));
     }
