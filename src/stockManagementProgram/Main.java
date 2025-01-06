@@ -15,11 +15,13 @@ public class Main {
 
 
     public static void main(String[] args) throws SQLException {
+        // Initialize database and load credentials
         DbHelper helper=new DbHelper();
         Connection conn=null;
         try{
             conn= helper.getConnection();
             System.out.println("Veritabanına bağlanıldı.");
+            // Load admin credentials
             String query="SELECT * FROM admin";
             Statement stmt=conn.createStatement();
             ResultSet rs=stmt.executeQuery(query);
@@ -34,18 +36,20 @@ public class Main {
             }
         }
 
+        // Set up UI look and feel
         try {
-            // Look and Feel setting
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // Dependency Injection
+        // Initialize services and repository
         StockRepository repository = new InMemoryStockRepository();
         StockService stockService = new StockServiceImpl(repository);
 
         // GUI initialisation
+        // Launch application UI
         SwingUtilities.invokeLater(() -> {
             MainFrame mainFrame = null;
             try {

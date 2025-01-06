@@ -12,6 +12,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
+/**
+ * Main application window managing navigation and layout.
+ * Handles user authentication and menu operations.
+ */
 public class MainFrame extends JFrame {
     private final CardLayout cardLayout;
     private final JPanel mainPanel;
@@ -58,8 +62,12 @@ public class MainFrame extends JFrame {
         UIManager.put("Button.font", new Font("Arial", Font.BOLD, 12));
     }
 
+    /**
+     * Initializes main application components
+     * Sets up login panel and main menu
+     */
     private void initializeComponents() throws SQLException {
-        // Login panel
+        // Initialize login panel with callback
         LoginPanel loginPanel = new LoginPanel(new LoginPanel.LoginCallback() {
             @Override
             public void onLoginSuccess() {
@@ -73,9 +81,11 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // Main panel with menu
+
+        // Set up main application panel with menu
         JPanel mainMenuPanel = createMainMenuPanel();
 
+        // Add panels to card layout
         mainPanel.add(loginPanel, "login");
         mainPanel.add(mainMenuPanel, "main");
 

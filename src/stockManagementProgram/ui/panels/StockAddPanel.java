@@ -14,7 +14,12 @@ import java.util.Date;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+/**
+ * Panel for adding new stock or updating existing stock quantities.
+ * Provides search functionality and stock addition form.
+ */
 public class StockAddPanel extends JPanel {
+    // UI Components
     private final StockService stockService;
     private final JTextField searchField;
     private final JTextField nameField;
@@ -243,11 +248,16 @@ private void handleSearchSelection() throws SQLException {
         }
     }
 
+    /**
+     * Handles stock addition process
+     * Validates input and updates database
+     */
     private void addStock() {
         DbHelper helper=new DbHelper();
         Connection conn=null;
         PreparedStatement preparedstmt=null;
         try {
+            // Input validation
             String name = nameField.getText().trim();
             if (name.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter a product name!");
@@ -258,10 +268,12 @@ private void handleSearchSelection() throws SQLException {
             double price = Double.parseDouble(priceField.getText());
             Unit selectedUnit = (Unit) unitComboBox.getSelectedItem();
 
+            // Record transaction
             try {
                 conn= helper.getConnection();
                 System.out.println("Transaction dbye bağlandı");
                 String query="INSERT INTO TransactionTable (ProductName,[Transaction],Quantity,Unit,Price,Date) Values(?,?,?,?,?,?)";
+                // Transaction recording logic
                 Date now=new Date();
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String formattedDate = formatter.format(now);
@@ -286,11 +298,15 @@ private void handleSearchSelection() throws SQLException {
                 }
             }
 
+            // Update stock
             if (nameField.isEditable()) {
+                // Handle new product
                 if (stockService.existsByName(name)) {
                     handleExistingStock(name, quantity, price, selectedUnit);
                 } else {
+                    // Insert new product
                     try{
+                        //Database insertion logic
                         conn=helper.getConnection();
                         System.out.println("Başarılı şekilde bağlandı");
                         String query="INSERT INTO ProductStock (ProductName,ProductPrice,ProductQuantity,ProductUnit,ProductInsertDate) Values(?,?,?,?,?)";
@@ -324,6 +340,8 @@ private void handleSearchSelection() throws SQLException {
                     JOptionPane.showMessageDialog(this, "New stock successfully added!");
                 }
             } else {
+                // Update existing product
+                // Database update logic
                 try{
                     conn=helper.getConnection();
                     System.out.println("Başarılı şekilde bağlandı");

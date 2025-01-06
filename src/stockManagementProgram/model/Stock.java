@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Represents a stock item in the inventory system.
+ * Manages stock properties and transaction history.
+ */
 public class Stock {
     private final String id;
     private String name;
@@ -15,6 +19,14 @@ public class Stock {
     private Unit unit;
     private List<StockTransaction> transactions;
 
+
+    /**
+     * Creates a new stock item with initial quantity
+     * @param name Product name
+     * @param quantity Initial quantity
+     * @param price Unit price
+     * @param unit Unit type (e.g., PIECE, KG)
+     */
     public Stock(String name, int quantity, double price, Unit unit) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
@@ -25,12 +37,24 @@ public class Stock {
         addTransaction(quantity, price, TransactionType.ADDITION);
     }
 
+
+    /**
+     * Adds quantity to existing stock
+     * @param quantity Amount to add
+     * @param price New unit price
+     */
     public void addQuantity(int quantity, double price) {
         this.quantity += quantity;
         this.price = price;
         addTransaction(quantity, price, TransactionType.ADDITION);
     }
 
+
+    /**
+     * Removes quantity from stock if available
+     * @param quantity Amount to remove
+     * @param price Sale price
+     */
     public void removeQuantity(int quantity, double price) {
         if (this.quantity >= quantity) {
             this.quantity -= quantity;

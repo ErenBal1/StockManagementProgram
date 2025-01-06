@@ -6,12 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="254335f2-7e76-45be-bce8-ab5c7e17967d" name="Changes" comment="Connections with database are established but removestock part is still incorrect">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/RecentTransactionsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/RecentTransactionsPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockRemovePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockRemovePanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/LowStockReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/LowStockReportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/MonthlySalesReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/MonthlySalesReportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/ProfitReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/ProfitReportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/StockValueReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/StockValueReportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/config/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/config/DbHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/config/DbHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/Stock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/model/Stock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/service/impl/StockServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/service/impl/StockServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockAddPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockAddPanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +35,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="bg" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,7 +49,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/ErenBal1/StockManagementProgram.git&quot;,
-    &quot;accountId&quot;: &quot;19f63cae-e617-4d0c-834b-770aefa899f7&quot;
+    &quot;accountId&quot;: &quot;2df845aa-0f56-4bd5-8cbb-5f7d37a7b11a&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -61,27 +63,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.StockManagementSystem.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "bg",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/barkin/Downloads/hekelebe56/StockManagementProgram",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.StockManagementSystem.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/barkin/Downloads/hekelebe56/StockManagementProgram&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="stockManagementProgram.Main" />
@@ -102,6 +104,14 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -115,6 +125,9 @@
       <workItem from="1733479468869" duration="503000" />
       <workItem from="1733479981506" duration="825000" />
       <workItem from="1733488924774" duration="1839000" />
+      <workItem from="1735940802679" duration="880000" />
+      <workItem from="1735979903309" duration="5475000" />
+      <workItem from="1736161624245" duration="1969000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit">
       <option name="closed" value="true" />
