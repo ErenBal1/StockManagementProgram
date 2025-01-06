@@ -257,107 +257,113 @@ private void handleSearchSelection() throws SQLException {
             int quantity = Integer.parseInt(quantityField.getText());
             double price = Double.parseDouble(priceField.getText());
             Unit selectedUnit = (Unit) unitComboBox.getSelectedItem();
+            if (quantity>=0 && price>=0) {
+                try {
+                    conn = helper.getConnection();
+                    System.out.println("Transaction dbye bağlandı");
+                    String query = "INSERT INTO TransactionTable (ProductName,[Transaction],Quantity,Unit,Price,Date) Values(?,?,?,?,?,?)";
+                    Date now = new Date();
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    String formattedDate = formatter.format(now);
+                    preparedstmt = conn.prepareStatement(query);
+                    preparedstmt.setString(1, name);
+                    preparedstmt.setString(2, "ADD");
+                    preparedstmt.setInt(3, quantity);
+                    preparedstmt.setString(4, String.valueOf(selectedUnit));
+                    preparedstmt.setDouble(5, price);
+                    preparedstmt.setString(6, formattedDate);
+                    preparedstmt.executeUpdate();
 
-            try {
-                conn= helper.getConnection();
-                System.out.println("Transaction dbye bağlandı");
-                String query="INSERT INTO TransactionTable (ProductName,[Transaction],Quantity,Unit,Price,Date) Values(?,?,?,?,?,?)";
-                Date now=new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                String formattedDate = formatter.format(now);
-                preparedstmt=conn.prepareStatement(query);
-                preparedstmt.setString(1,name);
-                preparedstmt.setString(2,"ADD");
-                preparedstmt.setInt(3,quantity);
-                preparedstmt.setString(4, String.valueOf(selectedUnit));
-                preparedstmt.setDouble(5,price);
-                preparedstmt.setString(6,formattedDate);
-                preparedstmt.executeUpdate();
 
-
-            }catch (SQLException e){
-                helper.showErrorMessage(e);
-            }finally {
-                if (preparedstmt!=null){
-                    preparedstmt.close();
+                } catch (SQLException e) {
+                    helper.showErrorMessage(e);
+                } finally {
+                    if (preparedstmt != null) {
+                        preparedstmt.close();
+                    }
+                    if (conn != null) {
+                        conn.close();
+                    }
                 }
-                if (conn!=null){
-                    conn.close();
-                }
-            }
 
-            if (nameField.isEditable()) {
-                if (stockService.existsByName(name)) {
-                    handleExistingStock(name, quantity, price, selectedUnit);
+                if (nameField.isEditable()) {
+                    if (stockService.existsByName(name)) {
+                        handleExistingStock(name, quantity, price, selectedUnit);
+                    } else {
+                        try{
+                            conn=helper.getConnection();
+                            System.out.println("Başarılı şekilde bağlandı");
+                            String query="INSERT INTO ProductStock (ProductName,ProductPrice,ProductQuantity,ProductUnit,ProductInsertDate) Values(?,?,?,?,?)";
+                            preparedstmt=conn.prepareStatement(query);
+
+                            preparedstmt.setString(1,name);
+                            preparedstmt.setDouble(2,price);
+                            preparedstmt.setInt(3,quantity);
+                            preparedstmt.setString(4, String.valueOf(selectedUnit));
+                            Date now = new Date();
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+                            String formattedDate = formatter.format(now);
+                            System.out.println("Formatted Date: " + formattedDate);
+
+                            preparedstmt.setString(5, formattedDate);
+                            preparedstmt.executeUpdate();
+                            System.out.println("Başarılı şekilde eklendi");
+
+                        }catch (SQLException e){
+                            helper.showErrorMessage(e);
+                        }finally {
+                            if (preparedstmt != null) {
+                                preparedstmt.close();
+                            }
+                            if (conn != null) {
+                                conn.close();
+                            }
+                        }
+                        stockService.addStock(name, quantity, price, selectedUnit);
+                        JOptionPane.showMessageDialog(this, "New stock successfully added!");
+                    }
                 } else {
                     try{
                         conn=helper.getConnection();
                         System.out.println("Başarılı şekilde bağlandı");
-                        String query="INSERT INTO ProductStock (ProductName,ProductPrice,ProductQuantity,ProductUnit,ProductInsertDate) Values(?,?,?,?,?)";
-                        preparedstmt=conn.prepareStatement(query);
-
-                        preparedstmt.setString(1,name);
-                        preparedstmt.setDouble(2,price);
-                        preparedstmt.setInt(3,quantity);
-                        preparedstmt.setString(4, String.valueOf(selectedUnit));
+                        String query="Update ProductStock set ProductQuantity = ProductQuantity + ? ,ProductPrice = ? ,ProductUpdateDate= ? Where ProductName = ?";
                         Date now = new Date();
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
                         String formattedDate = formatter.format(now);
-                        System.out.println("Formatted Date: " + formattedDate);
-
-                        preparedstmt.setString(5, formattedDate);
+                        preparedstmt=conn.prepareStatement(query);
+                        preparedstmt.setInt(1,quantity);
+                        preparedstmt.setDouble(2,price);
+                        preparedstmt.setString(3,formattedDate);
+                        preparedstmt.setString(4,name);
                         preparedstmt.executeUpdate();
-                        System.out.println("Başarılı şekilde eklendi");
+                        System.out.println("Başarılı şekilde güncellendi");
 
                     }catch (SQLException e){
                         helper.showErrorMessage(e);
                     }finally {
-                        if (preparedstmt != null) {
-                            preparedstmt.close();
-                        }
-                        if (conn != null) {
-                            conn.close();
+                        try {
+                            if (preparedstmt!=null){
+                                preparedstmt.close();
+                            }
+                            if (conn!=null){
+                                conn.close();
+                            }
+                        }catch (SQLException e ){
+                            System.out.println(e.getMessage());
                         }
                     }
                     stockService.addStock(name, quantity, price, selectedUnit);
-                    JOptionPane.showMessageDialog(this, "New stock successfully added!");
+                    JOptionPane.showMessageDialog(this, "Stock successfully updated!");
                 }
-            } else {
-                try{
-                    conn=helper.getConnection();
-                    System.out.println("Başarılı şekilde bağlandı");
-                    String query="Update ProductStock set ProductQuantity = ProductQuantity + ? ,ProductPrice = ? ,ProductUpdateDate= ? Where ProductName = ?";
-                    Date now = new Date();
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                    String formattedDate = formatter.format(now);
-                    preparedstmt=conn.prepareStatement(query);
-                    preparedstmt.setInt(1,quantity);
-                    preparedstmt.setDouble(2,price);
-                    preparedstmt.setString(3,formattedDate);
-                    preparedstmt.setString(4,name);
-                    preparedstmt.executeUpdate();
-                    System.out.println("Başarılı şekilde güncellendi");
 
-                }catch (SQLException e){
-                    helper.showErrorMessage(e);
-                }finally {
-                    try {
-                        if (preparedstmt!=null){
-                            preparedstmt.close();
-                        }
-                        if (conn!=null){
-                            conn.close();
-                        }
-                    }catch (SQLException e ){
-                        System.out.println(e.getMessage());
-                    }
-                }
-                stockService.addStock(name, quantity, price, selectedUnit);
-                JOptionPane.showMessageDialog(this, "Stock successfully updated!");
+                clearFields();
+
+
+            }else{
+                JOptionPane.showMessageDialog(this, "Quantity or Price invalid value!!");
             }
 
-            clearFields();
 
         } catch (NumberFormatException | SQLException ex) {
             JOptionPane.showMessageDialog(this, "Invalid quantity or price!");
