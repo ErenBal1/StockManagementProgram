@@ -214,56 +214,60 @@ public class StockRemovePanel extends JPanel {
             int quantity = Integer.parseInt(quantityField.getText());
             double price = Double.parseDouble(priceField.getText());
 
-            conn = helper.getConnection();
-            conn.setAutoCommit(false); // Transaction başlat AI
+            if (quantity>=0 &&price>=0) {
+                conn = helper.getConnection();
+                conn.setAutoCommit(false); // Transaction başlat AI
 
 
-            String query = "SELECT * FROM ProductStock WHERE ProductName LIKE ?";
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, name + "%");
-            rs = preparedStatement.executeQuery();
+                String query = "SELECT * FROM ProductStock WHERE ProductName LIKE ?";
+                preparedStatement = conn.prepareStatement(query);
+                preparedStatement.setString(1, name + "%");
+                rs = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                productsNames.add(rs.getString("ProductName"));
-            }
-
-            for (String productName : productsNames) {
-                if (productName.equals(name)) {
-                    query = "SELECT * FROM ProductStock WHERE ProductName = ?";
-                    preparedStatement = conn.prepareStatement(query);
-                    preparedStatement.setString(1, name);
-                    rs = preparedStatement.executeQuery();
-
-                    if (rs.next() && rs.getInt("ProductQuantity") >= quantity) {
-                        query = "UPDATE ProductStock SET ProductQuantity = ProductQuantity - ? WHERE ProductName = ?";
-                        preparedStatement = conn.prepareStatement(query);
-                        preparedStatement.setInt(1, quantity);
-                        preparedStatement.setString(2, name);
-                        preparedStatement.executeUpdate();
-
-                        query = "INSERT INTO TransactionTable (ProductName, [Transaction], Quantity, Unit, Price, Date) VALUES (?, ?, ?, ?, ?, ?)";
-                        preparedStatement = conn.prepareStatement(query);
-                        Date now = new Date();
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String formattedDate = formatter.format(now);
-
-                        preparedStatement.setString(1, name);
-                        preparedStatement.setString(2, "REMOVE");
-                        preparedStatement.setInt(3, quantity);
-                        preparedStatement.setString(4, rs.getString("ProductUnit"));
-                        preparedStatement.setDouble(5, price);
-                        preparedStatement.setString(6, formattedDate);
-                        preparedStatement.executeUpdate();
-
-                        JOptionPane.showMessageDialog(this, "Stock successfully removed!");
-                        clearFields();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Insufficient stock quantity!");
-                    }
-                    break;
+                while (rs.next()) {
+                    productsNames.add(rs.getString("ProductName"));
                 }
+
+                for (String productName : productsNames) {
+                    if (productName.equals(name)) {
+                        query = "SELECT * FROM ProductStock WHERE ProductName = ?";
+                        preparedStatement = conn.prepareStatement(query);
+                        preparedStatement.setString(1, name);
+                        rs = preparedStatement.executeQuery();
+
+                        if (rs.next() && rs.getInt("ProductQuantity") >= quantity) {
+                            query = "UPDATE ProductStock SET ProductQuantity = ProductQuantity - ? WHERE ProductName = ?";
+                            preparedStatement = conn.prepareStatement(query);
+                            preparedStatement.setInt(1, quantity);
+                            preparedStatement.setString(2, name);
+                            preparedStatement.executeUpdate();
+
+                            query = "INSERT INTO TransactionTable (ProductName, [Transaction], Quantity, Unit, Price, Date) VALUES (?, ?, ?, ?, ?, ?)";
+                            preparedStatement = conn.prepareStatement(query);
+                            Date now = new Date();
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            String formattedDate = formatter.format(now);
+
+                            preparedStatement.setString(1, name);
+                            preparedStatement.setString(2, "REMOVE");
+                            preparedStatement.setInt(3, quantity);
+                            preparedStatement.setString(4, rs.getString("ProductUnit"));
+                            preparedStatement.setDouble(5, price);
+                            preparedStatement.setString(6, formattedDate);
+                            preparedStatement.executeUpdate();
+
+                            JOptionPane.showMessageDialog(this, "Stock successfully removed!");
+                            clearFields();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Insufficient stock quantity!");
+                        }
+                        break;
+                    }
+                }
+                conn.commit(); // Transaction onayla
+            }else {
+                JOptionPane.showMessageDialog(this, "Error: Quantity or Price invalid value!!");
             }
-            conn.commit(); // Transaction onayla
         } catch (SQLException | NumberFormatException e) {
             try {
                 if (conn != null) conn.rollback(); // Hata olursa geri al

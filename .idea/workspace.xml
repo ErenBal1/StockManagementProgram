@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="254335f2-7e76-45be-bce8-ab5c7e17967d" name="Changes" comment="Connections with database are established but removestock part is still incorrect">
+    <list default="true" id="254335f2-7e76-45be-bce8-ab5c7e17967d" name="Changes" comment="Code Refactored a bit.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/config/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/config/DbHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/config/DbHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/Stock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/model/Stock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/service/impl/StockServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/service/impl/StockServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/MainFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockAddPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockAddPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/enums/TransactionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/model/enums/TransactionType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +120,7 @@
       <workItem from="1733488924774" duration="1839000" />
       <workItem from="1735940802679" duration="880000" />
       <workItem from="1735979903309" duration="5475000" />
-      <workItem from="1736161624245" duration="1969000" />
+      <workItem from="1736161624245" duration="5248000" />
     </task>
     <task id="LOCAL-00001" summary="First Commit">
       <option name="closed" value="true" />
@@ -177,7 +170,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735826784125</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Code Refactored a bit.">
+      <option name="closed" value="true" />
+      <created>1736168536615</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1736168536615</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,6 +200,7 @@
     <MESSAGE value="Branch Control" />
     <MESSAGE value="All functions and UI elements added." />
     <MESSAGE value="Connections with database are established but removestock part is still incorrect" />
-    <option name="LAST_COMMIT_MESSAGE" value="Connections with database are established but removestock part is still incorrect" />
+    <MESSAGE value="Code Refactored a bit." />
+    <option name="LAST_COMMIT_MESSAGE" value="Code Refactored a bit." />
   </component>
 </project>
