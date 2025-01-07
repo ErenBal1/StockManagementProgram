@@ -12,6 +12,11 @@ import java.sql.*;
 import java.text.DecimalFormat;
 import java.util.Comparator;
 
+/**
+ * Panel for displaying current stock inventory with filtering capabilities.
+ * Provides a sortable table view of all stock items with unit-based filtering.
+ * Supports real-time updates through manual refresh.
+ */
 public class StockViewPanel extends JPanel {
         private static final DecimalFormat PRICE_FORMAT = new DecimalFormat("#,##0.00");
         private final DefaultTableModel tableModel;

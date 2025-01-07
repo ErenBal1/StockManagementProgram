@@ -265,7 +265,7 @@ private void handleSearchSelection() throws SQLException {
             if (quantity>=0 && price>=0) {
                 try {
                     conn = helper.getConnection();
-                    System.out.println("Transaction dbye bağlandı");
+                    System.out.println("Transaction connected to database.");
                     String query = "INSERT INTO TransactionTable (ProductName,[Transaction],Quantity,Unit,Price,Date) Values(?,?,?,?,?,?)";
                     Date now = new Date();
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -297,7 +297,7 @@ private void handleSearchSelection() throws SQLException {
                     } else {
                         try{
                             conn=helper.getConnection();
-                            System.out.println("Başarılı şekilde bağlandı");
+                            System.out.println("Successfully connected.");
                             String query="INSERT INTO ProductStock (ProductName,ProductPrice,ProductQuantity,ProductUnit,ProductInsertDate) Values(?,?,?,?,?)";
                             preparedstmt=conn.prepareStatement(query);
 
@@ -313,7 +313,7 @@ private void handleSearchSelection() throws SQLException {
 
                             preparedstmt.setString(5, formattedDate);
                             preparedstmt.executeUpdate();
-                            System.out.println("Başarılı şekilde eklendi");
+                            System.out.println("Successfully added.");
 
                         }catch (SQLException e){
                             helper.showErrorMessage(e);
@@ -331,14 +331,14 @@ private void handleSearchSelection() throws SQLException {
                 } else {
                     try{
                         conn=helper.getConnection();
-                        System.out.println("Başarılı şekilde bağlandı");
+                        System.out.println("Successfully connected.");
                         String query="Update ProductStock set ProductQuantity = ProductQuantity + ? ,ProductPrice = ?  Where ProductName = ?";
                         preparedstmt=conn.prepareStatement(query);
                         preparedstmt.setInt(1,quantity);
                         preparedstmt.setDouble(2,price);
                         preparedstmt.setString(3,name);
                         preparedstmt.executeUpdate();
-                        System.out.println("Başarılı şekilde güncellendi");
+                        System.out.println("Successfully updated.");
 
                     }catch (SQLException e){
                         helper.showErrorMessage(e);

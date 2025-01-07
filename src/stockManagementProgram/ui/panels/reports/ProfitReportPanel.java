@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Panel for generating and displaying profit/loss reports.
+ * Calculates profit by comparing sales revenue against product costs.
+ */
 public class ProfitReportPanel extends JPanel {
     private final DefaultTableModel tableModel;
     private final JLabel lastGeneratedLabel;

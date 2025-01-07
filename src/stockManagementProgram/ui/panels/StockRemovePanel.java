@@ -118,7 +118,6 @@ public class StockRemovePanel extends JPanel {
      * Performs product search and updates search results.
      * Queries database for matching products and displays current stock levels.
      */
-
     private void performSearch() throws SQLException {
         String searchTerm = searchField.getText().toLowerCase().trim();
         searchResults.removeAllItems();
@@ -166,7 +165,6 @@ public class StockRemovePanel extends JPanel {
      * Handles selection from search results dropdown.
      * Updates form with selected product details and current stock level.
      */
-
     private void handleSearchSelection() throws SQLException {
         String selected = (String) searchResults.getSelectedItem();
         Connection conn = null;

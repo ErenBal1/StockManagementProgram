@@ -14,8 +14,6 @@ public class Stock {
     private double price;
     private final Unit unit;
 
-
-
     /**
      * Creates a new stock item with initial quantity
      */
@@ -27,7 +25,6 @@ public class Stock {
         this.unit = unit;
     }
 
-
     /**
      * Adds quantity to existing stock
      */
@@ -35,19 +32,6 @@ public class Stock {
         this.quantity += quantity;
         this.price = price;
     }
-
-
-    /**
-     * Removes quantity from stock if available
-     */
-    public void removeQuantity(int quantity) {
-        if (this.quantity >= quantity) {
-            this.quantity -= quantity;
-
-        }
-    }
-
-
 
     // Getters and Setters
     public String getId() { return id; }

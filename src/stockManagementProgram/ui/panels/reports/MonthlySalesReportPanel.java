@@ -15,6 +15,10 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Panel for displaying and generating monthly sales reports.
+ * Shows detailed sales transactions and calculates total sales amount.
+ */
 public class MonthlySalesReportPanel extends JPanel {
 
     private final DefaultTableModel tableModel;

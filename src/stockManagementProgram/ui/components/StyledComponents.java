@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Utility class providing factory methods for styled Swing components.
+ */
 public class StyledComponents {
 
     public static JTextField createStyledTextField() {

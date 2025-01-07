@@ -1,5 +1,8 @@
 package stockManagementProgram.model.enums;
 
+/**
+ * Represents the measurement units used in the stock management system.
+ */
 public enum Unit {
     PIECE("Piece"),
     KG("Kilogram"),

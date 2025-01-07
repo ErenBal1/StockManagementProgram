@@ -15,7 +15,6 @@ public class InMemoryStockRepository implements StockRepository {
      */
     private final Map<String, Stock> stocks = new HashMap<>();
 
-
     /**
      * Performs case-sensitive name comparison
      * Returns first matching stock if multiple stocks have the same name
@@ -40,8 +39,9 @@ public class InMemoryStockRepository implements StockRepository {
         stocks.put(stock.getId(), stock);
     }
 
-     //Updates existing stock with the same operation as save func
-
+    /**
+     * Updates existing stock with the same operation as save func
+     */
     @Override
     public void update(Stock stock) {
         stocks.put(stock.getId(), stock);

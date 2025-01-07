@@ -14,7 +14,7 @@ public class DbHelper {
      * Establishes and returns a database connection
      */
     public Connection getConnection() throws SQLException {
-        String path = "jdbc:sqlite:/Users/barkin/Downloads/db_klasor/javASqlLite.db";
+        String path = "jdbc:sqlite:/Users/barkin/Downloads/db_klasor/javASqlLite.db"; // You need to enter the appropriate path to run it!
         return DriverManager.getConnection(path);
     }
 

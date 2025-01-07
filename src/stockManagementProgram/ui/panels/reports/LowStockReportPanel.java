@@ -16,6 +16,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 
+/**
+ * Panel for displaying and generating low stock reports.
+ * Identifies products with quantities below the critical threshold.
+ */
 public class LowStockReportPanel extends JPanel {
     private final DefaultTableModel tableModel;
     private final JLabel lastGeneratedLabel;

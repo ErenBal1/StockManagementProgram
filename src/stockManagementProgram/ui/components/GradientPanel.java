@@ -3,6 +3,10 @@ package stockManagementProgram.ui.components;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Custom JPanel implementation that renders a gradient background.
+ * Used as a base panel for various sections of the application to maintain visual consistency.
+ */
 public class GradientPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {

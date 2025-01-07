@@ -20,7 +20,7 @@ public class Main {
         Connection conn=null;
         try{
             conn= helper.getConnection();
-            System.out.println("Veritabanına bağlanıldı.");
+            System.out.println("Connected to the database.");
             // Load admin credentials
             String query="SELECT * FROM admin";
             Statement stmt=conn.createStatement();

@@ -12,7 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+/**
+ * Panel for displaying recent stock transactions.
+ * Shows a color-coded table of stock additions and removals.
+ * Provides real-time updates through a refresh mechanism.
+ */
 public class RecentTransactionsPanel extends JPanel {
     private final DefaultTableModel tableModel;
 
@@ -69,7 +73,7 @@ public class RecentTransactionsPanel extends JPanel {
         tableModel.setRowCount(0);
         try{
             conn=helper.getConnection();
-            System.out.println("Başarılı şekilde bağlandı");
+            System.out.println("Successfully connected.");
             String query="SELECT * FROM TransactionTable";
             stmt=conn.createStatement();
             ResultSet rs=stmt.executeQuery(query);

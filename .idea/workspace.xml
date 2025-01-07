@@ -6,24 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="254335f2-7e76-45be-bce8-ab5c7e17967d" name="Changes" comment="Code Refactored a bit.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/config/DbHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/config/DbHelper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/Stock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/model/Stock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/StockTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/model/StockTransaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/enums/TransactionType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/repository/StockRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/repository/StockRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/repository/impl/InMemoryStockRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/repository/impl/InMemoryStockRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/service/StockService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/service/StockService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/service/impl/StockServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/service/impl/StockServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/MainFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/components/StyledComponents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/components/StyledComponents.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/RecentTransactionsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/RecentTransactionsPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockAddPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockAddPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockRemovePanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockRemovePanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockViewPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/StockViewPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/LowStockReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/LowStockReportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/MonthlySalesReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/MonthlySalesReportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/ProfitReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/ProfitReportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/StockValueReportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/ui/panels/reports/StockValueReportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/stockManagementProgram/model/enums/TransactionType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/stockManagementProgram/model/enums/TransactionType.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

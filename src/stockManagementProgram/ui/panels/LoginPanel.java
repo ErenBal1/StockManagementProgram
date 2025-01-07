@@ -6,6 +6,11 @@ import stockManagementProgram.ui.components.StyledComponents;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Login panel for user authentication.
+ * Extends GradientPanel to provide a styled background.
+ * Handles user credentials verification and provides feedback through callbacks.
+ */
 public class LoginPanel extends GradientPanel {
     private final JTextField usernameField;
     private final JPasswordField passwordField;

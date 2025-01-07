@@ -13,6 +13,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 
+/**
+ * Panel for displaying and generating stock value reports.
+ * Calculates and shows the current monetary value of all inventory.
+ * Provides total inventory valuation and individual product values.
+ */
 public class StockValueReportPanel extends JPanel {
     private final DefaultTableModel tableModel;
     private final JLabel lastGeneratedLabel;

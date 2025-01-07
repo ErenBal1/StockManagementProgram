@@ -3,6 +3,9 @@ package stockManagementProgram.util;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Utility class for formatting dates in the stock management system.
+ */
 public class DateFormatter {
     private static final DateTimeFormatter DEFAULT_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
