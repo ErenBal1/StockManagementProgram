@@ -4,14 +4,12 @@ import stockManagementProgram.config.DbHelper;
 import stockManagementProgram.model.enums.Unit;
 import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
-
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
@@ -115,8 +113,6 @@ public class StockAddPanel extends JPanel {
             var matchingStocks = stockService.getAllStocks().stream()
                     .filter(stock -> stock.getName().toLowerCase().contains(searchTerm))
                     .collect(Collectors.toList());
-
-            //matchingStocks.forEach(stock -> searchResults.addItem(stock.getName()));
 
             Connection conn= null;
             PreparedStatement preparedStatement=null;
@@ -336,15 +332,11 @@ private void handleSearchSelection() throws SQLException {
                     try{
                         conn=helper.getConnection();
                         System.out.println("Başarılı şekilde bağlandı");
-                        String query="Update ProductStock set ProductQuantity = ProductQuantity + ? ,ProductPrice = ? ,ProductUpdateDate= ? Where ProductName = ?";
-                        Date now = new Date();
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        String formattedDate = formatter.format(now);
+                        String query="Update ProductStock set ProductQuantity = ProductQuantity + ? ,ProductPrice = ?  Where ProductName = ?";
                         preparedstmt=conn.prepareStatement(query);
                         preparedstmt.setInt(1,quantity);
                         preparedstmt.setDouble(2,price);
-                        preparedstmt.setString(3,formattedDate);
-                        preparedstmt.setString(4,name);
+                        preparedstmt.setString(3,name);
                         preparedstmt.executeUpdate();
                         System.out.println("Başarılı şekilde güncellendi");
 

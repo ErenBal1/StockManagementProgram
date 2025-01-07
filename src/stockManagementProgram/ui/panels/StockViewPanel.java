@@ -1,29 +1,29 @@
 package stockManagementProgram.ui.panels;
 
 import stockManagementProgram.config.DbHelper;
-import stockManagementProgram.model.Stock;
-import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
 import stockManagementProgram.util.PriceFormatter;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.sql.*;
+import java.text.DecimalFormat;
+import java.util.Comparator;
 
 public class StockViewPanel extends JPanel {
-
-        private final StockService stockService;
+        private static final DecimalFormat PRICE_FORMAT = new DecimalFormat("#,##0.00");
         private final DefaultTableModel tableModel;
         private final JComboBox<String> unitFilterCombo;
         private String currentUnit = "All Units";
-
-    public StockViewPanel(StockService stockService) throws SQLException {
-        this.stockService = stockService;
+        public static String format(double price) {
+        return "₺" + PRICE_FORMAT.format(price);
+    }
+    public StockViewPanel() throws SQLException {
         setLayout(new BorderLayout(10, 10));
 
-        // Temel tablo yapısı
+        // Basic table structure
         String[] columns = {"Product Name", "Quantity", "Unit", "Unit Price"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -32,12 +32,63 @@ public class StockViewPanel extends JPanel {
             }
         };
 
-        // Tablo ve sorter oluşturma
+        // Creating tables and sorters
         JTable table = new JTable(tableModel);
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
 
-        // Filter panel oluşturma
+
+
+        // Special sorter for numeric columns
+        sorter.setComparator(1, new Comparator<Object>() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                Integer num1 = Integer.parseInt(o1.toString());
+                Integer num2 = Integer.parseInt(o2.toString());
+                return num1.compareTo(num2);
+            }
+        });
+
+
+
+// Updated price comparator
+        sorter.setComparator(3, new Comparator<Object>() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                try {
+                    // Debug print to see incoming values
+                    System.out.println("Comparing: " + o1 + " with " + o2);
+
+                    // Remove all non-numeric characters except decimal point
+                    String price1 = o1.toString().replaceAll("[^\\d.]", "");
+                    String price2 = o2.toString().replaceAll("[^\\d.]", "");
+
+                    // Debug print after cleaning
+                    System.out.println("After cleaning: " + price1 + " vs " + price2);
+
+                    // Parse as BigDecimal for precise decimal comparison
+                    BigDecimal num1 = new BigDecimal(price1);
+                    BigDecimal num2 = new BigDecimal(price2);
+
+                    // Debug print final values
+                    System.out.println("Comparing BigDecimals: " + num1 + " vs " + num2);
+
+                    return num1.compareTo(num2);
+                } catch (Exception e) {
+                    System.err.println("Error comparing prices: " + e.getMessage());
+                    System.err.println("Values were: " + o1 + " and " + o2);
+                    // Fall back to string comparison
+                    return o1.toString().compareTo(o2.toString());
+                }
+            }
+        });
+
+// Also update your PriceFormatter.format method to ensure consistent formatting:
+
+
+        table.setRowSorter(sorter);
+
+        // Create a filter panel
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         String[] units = {"All Units", "Piece", "Kilogram", "Liter", "Meter"};
         unitFilterCombo = new JComboBox<>(units);
@@ -53,7 +104,7 @@ public class StockViewPanel extends JPanel {
         filterPanel.add(new JLabel("Filter by Unit: "));
         filterPanel.add(unitFilterCombo);
 
-        // Scroll ve refresh button ekleme
+        // Add scroll and refresh button
         JScrollPane scrollPane = new JScrollPane(table);
         JButton refreshButton = StyledComponents.createStyledButton("Refresh");
         refreshButton.addActionListener(e -> {
@@ -64,12 +115,12 @@ public class StockViewPanel extends JPanel {
             }
         });
 
-        // Panel düzeni
+        // Panel layout
         add(filterPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(refreshButton, BorderLayout.SOUTH);
 
-        // İlk veri yükleme
+        // Initial data upload
         refreshTable();
     }
 
@@ -88,17 +139,17 @@ public class StockViewPanel extends JPanel {
             while (rs.next()) {
                 String unit = rs.getString(5);
 
-                // Eğer filtre "All Units" değilse ve birim eşleşmiyorsa, atla
+                // If the filter is not “All Units” and the unit does not match, skip
                 if (!"All Units".equals(currentUnit) &&
                         !currentUnit.equalsIgnoreCase(unit)) {
                     continue;
                 }
 
                 tableModel.addRow(new Object[]{
-                        rs.getString(2),  // Product Name
-                        rs.getInt(4),     // Quantity
-                        unit,             // Unit
-                        PriceFormatter.format(rs.getDouble(3))  // Price
+                        rs.getString("ProductName"),
+                        rs.getInt("ProductQuantity"),
+                        unit,
+                        PriceFormatter.format(rs.getDouble("ProductPrice"))
                 });
             }
         } catch (SQLException e) {

@@ -2,11 +2,10 @@ package stockManagementProgram.ui.panels.reports;
 
 import stockManagementProgram.config.AppConfig;
 import stockManagementProgram.config.DbHelper;
-import stockManagementProgram.model.Stock;
-import stockManagementProgram.service.StockService;
+
+
 import stockManagementProgram.ui.components.StyledComponents;
 import stockManagementProgram.util.DateFormatter;
-import stockManagementProgram.util.PriceFormatter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,12 +17,11 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 
 public class LowStockReportPanel extends JPanel {
-    private final StockService stockService;
     private final DefaultTableModel tableModel;
     private final JLabel lastGeneratedLabel;
 
-    public LowStockReportPanel(StockService stockService) {
-        this.stockService = stockService;
+    public LowStockReportPanel() {
+
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createTitledBorder("Low Stock Report"));
 
@@ -84,9 +82,9 @@ public class LowStockReportPanel extends JPanel {
             while (rs.next()){
                 if (rs.getInt("ProductQuantity")< AppConfig.CRITICAL_STOCK_LEVEL) {
                     tableModel.addRow(new Object[]{
-                            rs.getString(2),
-                            rs.getInt(4),
-                            rs.getString(5),
+                            rs.getString("ProductName"),
+                            rs.getInt("ProductQuantity"),
+                            rs.getString("ProductUnit"),
                             "CRITICAL LEVEL"
                     });
                 }

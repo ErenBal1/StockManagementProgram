@@ -21,16 +21,6 @@ public class StyledComponents {
         return field;
     }
 
-    public static JPasswordField createStyledPasswordField() {
-        JPasswordField field = new JPasswordField(20);
-        field.setPreferredSize(new Dimension(200, 30));
-        field.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(AppConfig.THEME_COLOR, 1),
-                new EmptyBorder(5, 5, 5, 5)
-        ));
-        return field;
-    }
-
     public static JButton createStyledButton(String text) {
         JButton button = new JButton(text);
         button.setBackground(AppConfig.BUTTON_COLOR);

@@ -105,9 +105,9 @@ public class MainFrame extends JFrame {
 
         // Add all panels
         contentPanel.add(new StockAddPanel(stockService), "addStock");
-        contentPanel.add(new StockRemovePanel(stockService), "removeStock");
-        contentPanel.add(new StockViewPanel(stockService), "viewStock");
-        contentPanel.add(new RecentTransactionsPanel(stockService), "recentTransactions");
+        contentPanel.add(new StockRemovePanel(), "removeStock");
+        contentPanel.add(new StockViewPanel(), "viewStock");
+        contentPanel.add(new RecentTransactionsPanel(), "recentTransactions");
         contentPanel.add(createReportsPanel(), "reports");
 
         panel.add(topMenu, BorderLayout.NORTH);
@@ -150,10 +150,10 @@ public class MainFrame extends JFrame {
         reportsPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         reportsPanel.setOpaque(false);
 
-        reportsPanel.add(new StockValueReportPanel(stockService));
-        reportsPanel.add(new MonthlySalesReportPanel(stockService));
-        reportsPanel.add(new LowStockReportPanel(stockService));
-        reportsPanel.add(new ProfitReportPanel(stockService));
+        reportsPanel.add(new StockValueReportPanel());
+        reportsPanel.add(new MonthlySalesReportPanel());
+        reportsPanel.add(new LowStockReportPanel());
+        reportsPanel.add(new ProfitReportPanel());
 
         return reportsPanel;
     }

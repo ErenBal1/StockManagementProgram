@@ -20,10 +20,6 @@ public class StockServiceImpl implements StockService {
 
     /**
      * Adds or updates stock in the system
-     * @param name Product name
-     * @param quantity Quantity to add
-     * @param price Unit price
-     * @param unit Unit type
      */
     @Override
     public void addStock(String name, int quantity, double price, Unit unit) {
@@ -40,35 +36,9 @@ public class StockServiceImpl implements StockService {
         }
     }
 
-    /**
-     * Removes stock if sufficient quantity exists
-     * @param name Product name
-     * @param quantity Quantity to remove
-     * @param price Sale price
-     * @throws IllegalArgumentException if insufficient stock
-     */
-    @Override
-    public void removeStock(String name, int quantity, double price) {
-        Optional<Stock> existingStock = stockRepository.findByName(name);
-        if (existingStock.isPresent()) {
-            Stock stock = existingStock.get();
-            if (stock.getQuantity() >= quantity) {
-                stock.removeQuantity(quantity, price);
-                stockRepository.update(stock);
-            } else {
-                throw new IllegalArgumentException("Insufficient stock quantity!");
-            }
-        }
-    }
-
     @Override
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
-    }
-
-    @Override
-    public Optional<Stock> findStock(String name) {
-        return stockRepository.findByName(name);
     }
 
     @Override

@@ -1,14 +1,9 @@
 package stockManagementProgram.ui.panels.reports;
 
 import stockManagementProgram.config.DbHelper;
-import stockManagementProgram.model.Stock;
-import stockManagementProgram.model.StockTransaction;
-import stockManagementProgram.model.enums.TransactionType;
-import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
 import stockManagementProgram.util.DateFormatter;
 import stockManagementProgram.util.PriceFormatter;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -16,15 +11,12 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class ProfitReportPanel extends JPanel {
-    private final StockService stockService;
     private final DefaultTableModel tableModel;
     private final JLabel lastGeneratedLabel;
 
-    public ProfitReportPanel(StockService stockService) {
-        this.stockService = stockService;
+    public ProfitReportPanel() {
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createTitledBorder("Profit/Loss Report"));
 

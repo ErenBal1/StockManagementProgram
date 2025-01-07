@@ -1,10 +1,6 @@
 package stockManagementProgram.model;
 
-import stockManagementProgram.model.enums.TransactionType;
 import stockManagementProgram.model.enums.Unit;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -13,19 +9,15 @@ import java.util.UUID;
  */
 public class Stock {
     private final String id;
-    private String name;
+    private final String name;
     private int quantity;
     private double price;
-    private Unit unit;
-    private List<StockTransaction> transactions;
+    private final Unit unit;
+
 
 
     /**
      * Creates a new stock item with initial quantity
-     * @param name Product name
-     * @param quantity Initial quantity
-     * @param price Unit price
-     * @param unit Unit type (e.g., PIECE, KG)
      */
     public Stock(String name, int quantity, double price, Unit unit) {
         this.id = UUID.randomUUID().toString();
@@ -33,38 +25,29 @@ public class Stock {
         this.quantity = quantity;
         this.price = price;
         this.unit = unit;
-        this.transactions = new ArrayList<>();
-        addTransaction(quantity, price, TransactionType.ADDITION);
     }
 
 
     /**
      * Adds quantity to existing stock
-     * @param quantity Amount to add
-     * @param price New unit price
      */
     public void addQuantity(int quantity, double price) {
         this.quantity += quantity;
         this.price = price;
-        addTransaction(quantity, price, TransactionType.ADDITION);
     }
 
 
     /**
      * Removes quantity from stock if available
-     * @param quantity Amount to remove
-     * @param price Sale price
      */
-    public void removeQuantity(int quantity, double price) {
+    public void removeQuantity(int quantity) {
         if (this.quantity >= quantity) {
             this.quantity -= quantity;
-            addTransaction(quantity, price, TransactionType.REMOVAL);
+
         }
     }
 
-    private void addTransaction(int quantity, double price, TransactionType type) {
-        transactions.add(new StockTransaction(quantity, price, type));
-    }
+
 
     // Getters and Setters
     public String getId() { return id; }
@@ -72,5 +55,4 @@ public class Stock {
     public int getQuantity() { return quantity; }
     public double getPrice() { return price; }
     public Unit getUnit() { return unit; }
-    public List<StockTransaction> getTransactions() { return transactions; }
 }

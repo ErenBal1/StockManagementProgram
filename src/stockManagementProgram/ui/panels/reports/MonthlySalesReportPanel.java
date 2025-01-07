@@ -1,15 +1,10 @@
 package stockManagementProgram.ui.panels.reports;
 
-import stockManagementProgram.config.AppConfig;
+
 import stockManagementProgram.config.DbHelper;
-import stockManagementProgram.model.Stock;
-import stockManagementProgram.model.StockTransaction;
-import stockManagementProgram.model.enums.TransactionType;
-import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
 import stockManagementProgram.util.DateFormatter;
 import stockManagementProgram.util.PriceFormatter;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -21,12 +16,12 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class MonthlySalesReportPanel extends JPanel {
-    private final StockService stockService;
+
     private final DefaultTableModel tableModel;
     private final JLabel lastGeneratedLabel;
 
-    public MonthlySalesReportPanel(StockService stockService) {
-        this.stockService = stockService;
+    public MonthlySalesReportPanel() {
+
         setLayout(new BorderLayout(5, 5));
         setBorder(BorderFactory.createTitledBorder("Monthly Sales Report"));
 
@@ -76,8 +71,8 @@ public class MonthlySalesReportPanel extends JPanel {
                    double amount = rs.getInt("Quantity") * rs.getDouble("Price");
                    totalSales += amount;
                     tableModel.addRow(new Object[]{
-                            rs.getString(7),
-                            rs.getString(2),
+                            rs.getString("Date"),
+                            rs.getString("ProductName"),
                             rs.getInt("Quantity"),
                             rs.getString("Unit"),
                             PriceFormatter.format(rs.getDouble("Price")),

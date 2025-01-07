@@ -1,14 +1,8 @@
 package stockManagementProgram.ui.panels;
 
 import stockManagementProgram.config.DbHelper;
-import stockManagementProgram.model.Stock;
-import stockManagementProgram.model.StockTransaction;
-import stockManagementProgram.model.enums.TransactionType;
-import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
-import stockManagementProgram.util.DateFormatter;
 import stockManagementProgram.util.PriceFormatter;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -17,15 +11,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class RecentTransactionsPanel extends JPanel {
-    private final StockService stockService;
     private final DefaultTableModel tableModel;
 
-    public RecentTransactionsPanel(StockService stockService) throws SQLException {
-        this.stockService = stockService;
+    public RecentTransactionsPanel() throws SQLException {
         setLayout(new BorderLayout(10, 10));
 
         String[] columns = {"Date", "Product", "Transaction", "Quantity", "Unit", "Price", "Total"};

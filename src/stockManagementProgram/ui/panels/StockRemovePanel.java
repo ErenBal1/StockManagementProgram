@@ -1,11 +1,7 @@
 package stockManagementProgram.ui.panels;
 
 import stockManagementProgram.config.DbHelper;
-import stockManagementProgram.model.Stock;
-import stockManagementProgram.service.StockService;
 import stockManagementProgram.ui.components.StyledComponents;
-import stockManagementProgram.util.DateFormatter;
-
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
@@ -15,10 +11,14 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
+
+/**
+ * Panel for managing stock removal operations in the inventory system.
+ * Handles product search, quantity validation, and transaction recording.
+ * Implements database transactions to ensure data consistency during removals.
+ */
 
 public class StockRemovePanel extends JPanel {
-    private final StockService stockService;
     private final JTextField searchField;
     private final JTextField nameField;
     private final JTextField quantityField;
@@ -26,8 +26,11 @@ public class StockRemovePanel extends JPanel {
     private final JComboBox<String> searchResults;
     private final JLabel currentQuantityLabel;
 
-    public StockRemovePanel(StockService stockService) {
-        this.stockService = stockService;
+    /**
+     * Constructs a stock removal panel with search and removal functionality.
+     * Initializes UI components and sets up event handlers.
+     */
+    public StockRemovePanel() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -42,15 +45,15 @@ public class StockRemovePanel extends JPanel {
         JButton searchButton = StyledComponents.createStyledButton("Search");
         JButton removeButton = StyledComponents.createStyledButton("Remove");
         JButton resetButton = StyledComponents.createStyledButton("Reset");
-
-
         nameField.setEditable(false);
-
         setupLayout(gbc, searchButton, removeButton, resetButton);
-
         setupListeners(searchButton, removeButton, resetButton);
     }
 
+    /**
+     * Sets up the panel layout using GridBagLayout.
+     * Arranges components in a user-friendly form layout.
+     */
     private void setupLayout(GridBagConstraints gbc, JButton searchButton, JButton removeButton, JButton resetButton) {
         gbc.gridx = 0; gbc.gridy = 0;
         add(new JLabel("Search Product:"), gbc);
@@ -88,7 +91,10 @@ public class StockRemovePanel extends JPanel {
         gbc.gridx = 2; gbc.gridy = 6;
         add(resetButton, gbc);
     }
-
+    /**
+     * Configures event listeners for interactive components.
+     * Handles search, remove, and reset actions with error handling.
+     */
     private void setupListeners(JButton searchButton, JButton removeButton, JButton resetButton) {
         searchButton.addActionListener(e -> {
             try {
@@ -108,13 +114,16 @@ public class StockRemovePanel extends JPanel {
         resetButton.addActionListener(e -> clearFields());
     }
 
+    /**
+     * Performs product search and updates search results.
+     * Queries database for matching products and displays current stock levels.
+     */
+
     private void performSearch() throws SQLException {
         String searchTerm = searchField.getText().toLowerCase().trim();
         searchResults.removeAllItems();
 
-        stockService.getAllStocks().stream()
-                .filter(stock -> stock.getName().toLowerCase().contains(searchTerm))
-                .forEach(stock -> searchResults.addItem(stock.getName()));
+
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         DbHelper helper = new DbHelper();
@@ -126,7 +135,6 @@ public class StockRemovePanel extends JPanel {
             preparedStatement = conn.prepareStatement(query);
             preparedStatement.setString(1, searchTerm + "%");
             ResultSet rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
                 String productName = rs.getString(2);
                 searchResults.addItem(productName);
@@ -142,7 +150,6 @@ public class StockRemovePanel extends JPanel {
                 preparedStatement.close();
             }
         }
-
         if (!productsNames.isEmpty()) {
             String firstMatch = productsNames.get(0);
             searchResults.setSelectedItem(firstMatch);
@@ -155,10 +162,10 @@ public class StockRemovePanel extends JPanel {
         }
     }
 
-
-
-
-
+    /**
+     * Handles selection from search results dropdown.
+     * Updates form with selected product details and current stock level.
+     */
 
     private void handleSearchSelection() throws SQLException {
         String selected = (String) searchResults.getSelectedItem();
@@ -167,23 +174,18 @@ public class StockRemovePanel extends JPanel {
         DbHelper helper = new DbHelper();
         if (selected != null) {
             nameField.setText(selected);
-
-
             try{
                 conn=helper.getConnection();
                 String query="Select * FROM ProductStock WHERE ProductName = ?";
                 preparedStatement=conn.prepareStatement(query);
                 preparedStatement.setString(1,selected);
                 ResultSet rs=preparedStatement.executeQuery();
-
                 priceField.setText(rs.getString(3));
                 currentQuantityLabel.setText("Current Quantity: " + rs.getInt(4) + " " + rs.getString(5));
                 searchResults.setSelectedItem(selected);
                 priceField.setText(rs.getString(3));
-
             }catch (SQLException e){
                 helper.showErrorMessage(e);
-
             }finally {
                 if (conn!=null){
                     conn.close();
@@ -192,11 +194,12 @@ public class StockRemovePanel extends JPanel {
                     preparedStatement.close();
                 }
             }
-
-
         }
     }
-
+    /**
+     * Processes stock removal with transaction management.
+     * Validates input, checks stock availability, and updates database.
+     */
     private void removeStock() {
         DbHelper helper = new DbHelper();
         Connection conn = null;
@@ -210,20 +213,15 @@ public class StockRemovePanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Please select a product!");
                 return;
             }
-
             int quantity = Integer.parseInt(quantityField.getText());
             double price = Double.parseDouble(priceField.getText());
-
             if (quantity>=0 &&price>=0) {
                 conn = helper.getConnection();
-                conn.setAutoCommit(false); // Transaction başlat AI
-
-
+                conn.setAutoCommit(false); // Start Transaction
                 String query = "SELECT * FROM ProductStock WHERE ProductName LIKE ?";
                 preparedStatement = conn.prepareStatement(query);
                 preparedStatement.setString(1, name + "%");
                 rs = preparedStatement.executeQuery();
-
                 while (rs.next()) {
                     productsNames.add(rs.getString("ProductName"));
                 }
@@ -234,20 +232,17 @@ public class StockRemovePanel extends JPanel {
                         preparedStatement = conn.prepareStatement(query);
                         preparedStatement.setString(1, name);
                         rs = preparedStatement.executeQuery();
-
                         if (rs.next() && rs.getInt("ProductQuantity") >= quantity) {
                             query = "UPDATE ProductStock SET ProductQuantity = ProductQuantity - ? WHERE ProductName = ?";
                             preparedStatement = conn.prepareStatement(query);
                             preparedStatement.setInt(1, quantity);
                             preparedStatement.setString(2, name);
                             preparedStatement.executeUpdate();
-
                             query = "INSERT INTO TransactionTable (ProductName, [Transaction], Quantity, Unit, Price, Date) VALUES (?, ?, ?, ?, ?, ?)";
                             preparedStatement = conn.prepareStatement(query);
                             Date now = new Date();
                             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                             String formattedDate = formatter.format(now);
-
                             preparedStatement.setString(1, name);
                             preparedStatement.setString(2, "REMOVE");
                             preparedStatement.setInt(3, quantity);
@@ -255,7 +250,6 @@ public class StockRemovePanel extends JPanel {
                             preparedStatement.setDouble(5, price);
                             preparedStatement.setString(6, formattedDate);
                             preparedStatement.executeUpdate();
-
                             JOptionPane.showMessageDialog(this, "Stock successfully removed!");
                             clearFields();
                         } else {
@@ -264,13 +258,13 @@ public class StockRemovePanel extends JPanel {
                         break;
                     }
                 }
-                conn.commit(); // Transaction onayla
+                conn.commit(); // Transaction approve
             }else {
                 JOptionPane.showMessageDialog(this, "Error: Quantity or Price invalid value!!");
             }
         } catch (SQLException | NumberFormatException e) {
             try {
-                if (conn != null) conn.rollback(); // Hata olursa geri al
+                if (conn != null) conn.rollback();
             } catch (SQLException rollbackEx) {
                 rollbackEx.printStackTrace();
             }
@@ -285,7 +279,10 @@ public class StockRemovePanel extends JPanel {
             }
         }
     }
-
+    /**
+     * Resets all form fields to their initial state.
+     * Clears search results, input fields, and quantity display.
+     */
     private void clearFields() {
         searchField.setText("");
         nameField.setText("");
